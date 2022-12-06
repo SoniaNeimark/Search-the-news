@@ -1,0 +1,270 @@
+.card {
+  padding: 0;
+  width: 288px;
+  height: 440px;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  color: rgba(26, 27, 34, 1);
+  font-family: "Roboto", Arial, Helvetica, sans-serif;
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.card__image {
+  width: 288px;
+  height: 196px;
+  object-fit: cover;
+}
+
+.card__keyword {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 24px;
+  color: black;
+  display: inline-block;
+  padding: 8px 20px;
+  background-color: white;
+  border: none;
+  border-radius: 10px;
+  box-sizing: border-box;
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 1;
+}
+
+.card__alert {
+  position: absolute;
+  top: 8px;
+  right: 53px;
+  width: 139px;
+  height: 40px;
+  font-size: 12px;
+  line-height: 14px;
+  color: black;
+  background-color: white;
+  border-radius: 10px;
+  border: none;
+  box-sizing: border-box;
+  z-index: 1;
+  display: none;
+  visibility: hidden;
+  text-align: center;
+}
+
+.card__alert_visible {
+  display: block;
+  visibility: visible;
+}
+
+.card__label {
+  width: 40px;
+  height: 40px;
+  background-color: white;
+  background-image: url(../../images/flag_gray.svg);
+  background-position: center;
+  background-size: 14px 19px;
+  border-radius: 10px;
+  border: none;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+}
+
+.card__label:hover {
+  background-image: url(../../images/flag_black.svg);
+}
+
+.card__label:visited {
+  background-image: url(../../images/flag_blue.svg);
+}
+
+.card__label_marked {
+  background-image: url(../../images/flag_blue.svg);
+}
+
+.card__label_marked:hover {
+  background-image: url(../../images/flag_blue_hover.svg);
+}
+
+.card__label:hover + .card__alert {
+  display: block;
+  visibility: visible;
+}
+
+.card__label_trashbin {
+  background-image: url(../../images/trash.svg);
+}
+
+.card__label_trashbin:hover {
+  background-image: url(../../images/trash_black.svg);
+}
+
+.card__article {
+  width: 256px;
+  height: 242px;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card__text {
+  width: 100%;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+}
+
+.card__date {
+  width: 100%;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 24px;
+  text-align: left;
+  color: rgba(182, 188, 191, 1);
+  margin: 0;
+  padding-top: 16px;
+}
+
+.card__title {
+  width: 100%;
+  font-family: "Roboto Slab", Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 24px;
+  margin: 0;
+  padding-top: 10px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card__paragraph {
+  width: 100%;
+  max-height: 102px;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 22px;
+  margin: 0;
+  padding-top: 14px;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  
+}
+
+.card__source {
+  width: 100%;
+  text-align: left;
+  font-family: "Roboto Slab", Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 20px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 0;
+  padding-bottom: 16px;
+  color: rgba(182, 188, 191, 1);
+}
+
+@media screen and (min-width: 768px) {
+  .card {
+    width: 224px;
+    height: 420px;
+    margin-right: 8px;
+  }
+
+  .card:nth-child(3) {
+    margin-right: 0;
+  }
+
+  .card__image {
+    width: 224px;
+    height: 150px;
+  }
+
+  .card__keyword {
+    top: 8px;
+    left: 8px;
+  }
+
+  .card__label {
+    top: 8px;
+    right: 8px;
+  }
+
+  .card__article {
+    width: 192px;
+    height: 270px;
+  }
+
+  .card__title {
+    height: 72px;
+    -webkit-line-clamp: 3;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .card {
+    width: 400px;
+    height: 578px;
+    margin-right: 16px;
+  }
+
+  .card__image {
+    width: 400px;
+    height: 272px;
+  }
+
+  .card__keyword {
+    top: 24px;
+    left: 24px;
+  }
+
+  .card__alert {
+    position: absolute;
+    top: 24px;
+    right: 69px;
+    width: 159px;
+    height: 40px;
+    font-size: 12px;
+    line-height: 14px;
+    color: black;
+    background-color: white;
+    border-radius: 10px;
+    border: none;
+    box-sizing: border-box;
+    z-index: 2;
+  }
+
+  .card__label {
+    top: 24px;
+    right: 24px;
+  }
+
+  .card__article {
+    width: 352px;
+  }
+
+  .card__title {
+    height: 60px;
+    font-size: 26px;
+    line-height: 30px;
+    -webkit-line-clamp: 2;
+  }
+}

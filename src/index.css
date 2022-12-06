@@ -1,0 +1,33 @@
+@import url(./vendor/normalize.css);
+@import url(./vendor/fonts/fonts.css);
+@import url(./components/App/App.css);
+@import url(./components/Navigation/Hamburger/Hamburger.css);
+@import url(./components/Navigation/TopNavBar/TopNavBar.css);
+@import url(./components/Navigation/NavMenuGroup/NavMenuGroup.css);
+@import url(./components/Header/Header.css);
+@import url(./components/SavedNewsHeader/SavedNewsHeader.css);
+@import url(./components/Popups/Popup/Popup.css);
+@import url(./components/Popups/DropOutPopup/DropOutPopup.css);
+@import url(./components/Popups/InputWithErrorField/InputWithErrorField.css);
+@import url(./components/Popups/PopupWithForm/PopupWithForm.css);
+@import url(./components/Main/Main.css);
+@import url(./components/Preloader/Preloader.css);
+@import url(./components/NotFound/NotFound.css);
+@import url(./components/Cards/Cards.css);
+@import url(./components/Card/Card.css);
+@import url(./components/About/About.css);
+@import url(./components/Footer/Footer.css);
+body {
+  max-width: 100vw;
+  margin: 0;
+  padding: 0;
+  background-color: #ffffff;
+  color: #000000;
+  font-family: "Roboto", Arial, Helvetica, sans-serif;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+}

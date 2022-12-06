@@ -1,0 +1,61 @@
+.submit-button {
+    width: 100%;
+    height: 64px;
+    color: rgba(182, 188, 191, 1);
+    background: rgba(230, 232, 235, 1);
+    border: none;
+    border-radius: 100px;
+    box-sizing: border-box;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 24px;
+    cursor: default;
+    margin-top: 24px;
+  }
+  
+  .submit-button_active {
+    color: white;
+    background-color: rgba(47, 113, 229, 1);
+    transition: background-color .25s linear;
+    cursor: pointer;
+  }
+  
+  .submit-button_active:hover {
+    background-color: rgba(52, 126, 255, 1);
+  }
+  .submit-button_active:active {
+    background-color: rgba(42, 101, 204, 1);
+  }  
+  
+  .button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 100px;
+    box-sizing: border-box;
+    font-family: "Roboto", Arial, Helvetica, sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 24px;
+  }
+  
+  .button_width_nav {
+    width: 152px;
+    background-image: none;
+  }
+  
+  @media screen and (min-width: 768px) {
+    .submit-button_place_header {
+      position: absolute;
+      right: 0;
+      width: 160px;
+      height: 100%;
+    }
+    
+  }
+  
+  @media screen and (min-width: 1440px) {
+    .button_width_nav {
+      width: 176px;
+    }
+  }

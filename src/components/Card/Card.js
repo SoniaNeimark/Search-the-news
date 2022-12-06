@@ -38,13 +38,7 @@ function Card(props) {
       <article className="card__article">
         <div className="card__text">
           <p className="card__date">{props.article.date}</p>
-<<<<<<< Updated upstream
           <h2 className="card__title">{props.article.title}</h2>
-=======
-          <h2 className="card__title">
-            {props.id + " " + props.article.title}
-          </h2>
->>>>>>> Stashed changes
           <p className="card__paragraph">{props.article.text}</p>
         </div>
         <p className="card__source">{props.article.source}</p>

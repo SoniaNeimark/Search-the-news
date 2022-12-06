@@ -78,7 +78,7 @@ const PopupWithForm = (props) => {
             }`}
           >
             {!props.signupSuccess ? "or " : ""}
-            <span className="form__link" onClick={handleLink}>
+            <span className="form__link hover-opacity" onClick={handleLink}>
               {props.popup.signupPopup || props.signupSuccess ? "Sign in" : "Sign up"}
             </span>
           </p>

@@ -10,10 +10,10 @@ const TopNavBar = (props) => {
       }`}
       id="nav"
     >
-    <div className={`nav__top${props.white ? " nav__top_theme_white" : ""}`}>
-      <h1 className="nav__logo" onClick={() => handleNavigate("/")}>
+    <div className={`nav__top${props.white ? " nav__top_theme_white" : ""} hover-opacity`}>
+      <h2 className="nav__logo" onClick={() => handleNavigate("/")}>
         NewsExplorer
-      </h1>
+      </h2>
       {props.children}
     </div>
     </nav>

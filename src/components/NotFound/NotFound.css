@@ -1,7 +1,29 @@
+.notfound {
+  width: 100%;
+  max-height: 374px;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  padding: 80px 0;
+  background-color: rgba(245, 246, 247, 1);
+}
+
+.notfound__image {
+  width: 80px;
+  height: 80px;
+  margin-top: 86px;
+  margin-bottom: 30px;
+
+}
+
 .notfound__title {
-  font-family: "Roboto Slab", Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-family: "Roboto-Slab", Cambria, Cochin, Georgia, Times, "Times New Roman",
+    serif;
   font-style: normal;
   font-weight: 400;
   font-size: 26px;
   line-height: 30px;
+  margin: 0;
+  padding-bottom: 16px;
 }

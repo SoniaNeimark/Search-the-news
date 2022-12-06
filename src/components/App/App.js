@@ -25,7 +25,7 @@ function App() {
   const [currentUser, setCurrentUser] = useState({});
 
   const closePopup = () => setPopup({});
-  
+
   const signIn = () => setPopup({ PopupWithFormIsOpen: true, clicked: false });
 
   const logOut = () => {
@@ -82,7 +82,7 @@ function App() {
     navigate,
     handleNavigate,
   };
-  
+
   return (
     <>
       <Routes>

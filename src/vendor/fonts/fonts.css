@@ -64,7 +64,7 @@
   @font-face {
     font-family: 'Roboto-Slab';
     font-style:  normal;
-    font-weight: 400;
+    font-weight: 700;
     font-display: swap;
     src: url("roboto-slab-700.woff") format("woff"),
          url("roboto-slab-700.woff2") format("woff2");

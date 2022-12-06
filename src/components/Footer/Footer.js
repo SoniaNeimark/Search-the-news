@@ -7,11 +7,11 @@ function Footer(props) {
     <footer className="footer">
       <nav className="footer__nav">
         <div className="footer__text-links">
-          <a className="footer__link" href={props.location.pathname === "/" ? "#nav" : "/"}>
+          <a className="footer__link hover-opacity" href={props.location.pathname === "/" ? "#nav" : "/"}>
             Home
           </a>
           <a
-            className="footer__link"
+            className="footer__link hover-opacity"
             href="https://practicum.com/en-isr/"
             target="_blank"
             rel="noreferrer noopener"
@@ -26,7 +26,7 @@ function Footer(props) {
             target="_blank"
             rel="noreferrer noopener"
           >
-            <img className="footer__icon" src={git} alt="Link to Git" />
+            <img className="footer__icon hover-opacity" src={git} alt="Link to Git" />
           </a>
           <a
             className="footer__link"
@@ -34,7 +34,7 @@ function Footer(props) {
             target="_blank"
             rel="noreferrer noopener"
           >
-            <img className="footer__icon" src={fb}  alt="Link to FaceBook"/>
+            <img className="footer__icon hover-opacity" src={fb}  alt="Link to FaceBook"/>
           </a>
         </div>
       </nav>

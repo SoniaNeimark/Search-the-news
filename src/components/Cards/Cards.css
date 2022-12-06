@@ -9,7 +9,8 @@
 
 .cards__title {
   width: 288px;
-  font-family: "Roboto Slab", Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-family: "Roboto-Slab", Cambria, Cochin, Georgia, Times, "Times New Roman",
+    serif;
   font-style: normal;
   font-weight: 400;
   font-size: 30px;

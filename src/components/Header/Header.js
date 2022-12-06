@@ -22,9 +22,11 @@ function Header(props) {
           }}
         >
           <input
+            name="search"
             className="header__input"
             type={"text"}
             placeholder="Enter topic"
+            required
           ></input>
           <button
             className="submit-button submit-button_place_header submit-button_active"

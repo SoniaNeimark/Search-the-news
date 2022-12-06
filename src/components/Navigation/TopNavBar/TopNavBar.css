@@ -1,80 +1,79 @@
 .nav {
-    width: 100%;
-    display: flex;
-    flex-flow: column;
-    align-items: center;
-    box-sizing: border-box;
-    justify-content: space-between;
-    z-index: 4;
-    color: white;
+  width: 100%;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  box-sizing: border-box;
+  justify-content: space-between;
+  z-index: 4;
+  color: white;
+}
+
+.nav_theme_white {
+  color: rgba(26, 27, 34, 1);
+}
+
+.nav__top {
+  width: 100%;
+  height: 56px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px rgba(255, 255, 255, 1) solid;
+}
+
+.nav__top_theme_white {
+  border-bottom: 1px rgba(209, 210, 214, 1) solid;
+}
+
+.nav_hidden {
+  visibility: hidden;
+  z-index: 0;
+  user-select: none;
+}
+
+.nav__logo {
+  font-family: "Roboto-Slab", Cambria, Cochin, Georgia, Times, "Times New Roman",
+    serif;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 24px;
+  margin: 0 0 0 16px;
+  cursor: pointer;
+}
+
+.nav__logo_theme_white {
+  color: rgba(26, 27, 34, 1);
+}
+
+@media screen and (min-width: 768px) {
+  .nav {
+    height: 66px;
   }
-  
-  .nav_theme_white {
-    color: rgba(26, 27, 34, 1);
-  }
-  
+
   .nav__top {
-    width: 100%;
-    height: 56px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px rgba(255, 255, 255, 1) solid;
+    height: 66px;
   }
-  
-  .nav__top_theme_white {
-    border-bottom: 1px rgba(209, 210, 214, 1) solid;
-  }
-  
+
   .nav_hidden {
-    visibility: hidden;
-    z-index: 0;
-    user-select: none;
+    visibility: visible;
+    user-select: all;
+    display: flex;
   }
-  
+
   .nav__logo {
-    font-family: "Roboto-Slab", Cambria, Cochin, Georgia, Times, "Times New Roman",
-      serif;
-    font-weight: 700;
-    font-size: 16px;
+    font-size: 20px;
     line-height: 24px;
-    margin: 0 0 0 16px;
-    cursor: pointer;
+    margin-left: 40px;
   }
-  
-  .nav__logo_theme_white {
-    color: rgba(26, 27, 34, 1);
+}
+
+@media screen and (min-width: 1440px) {
+  .nav__top {
+    height: 80px;
   }
-  
-  @media screen and (min-width: 768px) {
-    .nav {
-      height: 66px;
-    }
-  
-    .nav__top {
-      height: 66px;
-    }
-  
-    .nav_hidden {
-      visibility: visible;
-      user-select: all;
-      display: flex;
-    }
-  
-    .nav__logo {
-      font-size: 20px;
-      line-height: 24px;
-      margin-left: 40px;
-    }
+
+  .nav__logo {
+    margin-left: 104px;
   }
-  
-  @media screen and (min-width: 1440px) {
-    .nav__top {
-      height: 80px;
-    }
-  
-    .nav__logo {
-      margin-left: 104px;
-    }
-  }
-  
+}

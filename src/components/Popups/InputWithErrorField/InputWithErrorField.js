@@ -3,7 +3,7 @@ const InputWithErrorField = (props) => {
   return (
     <label className="form__label">
       {props.title}
-      <input className="form__input" {...props} />
+      <input className="form__input" required {...props} />
       {error ? (
         <p className="form__input form__input_error">{error.message}</p>
       ) : null}

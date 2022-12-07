@@ -1,0 +1,131 @@
+.menu {
+  width: 288px;
+  height: 174px;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 24px;
+  color: white;
+  margin-top: 16px;
+}
+
+.menu_theme_white {
+  color: rgba(26, 27, 34, 1);
+}
+
+.menu_screen_wide {
+  display: none;
+  visibility: hidden;
+}
+
+.menu_screen_narrow {
+  display: flex;
+  flex-flow: column;
+  visibility: visible;
+  height: auto;
+  align-items: center;
+  justify-content: space-between;
+  color: white;
+}
+
+.menu__item {
+  width: 100%;
+  line-height: 56px;
+  text-align: left;
+  cursor: pointer;
+  align-self: center;
+  margin: 0;
+}
+
+.menu__item_theme_white {
+  color: rgba(26, 27, 34, 1);
+}
+
+.menu__item_active {
+  cursor: pointer;
+}
+
+.menu__button {
+  width: 100%;
+  height: 56px;
+  border: 1px solid;
+  background-color: transparent;
+  color: inherit;
+  cursor: pointer;
+  margin: 24px 0 24px 0;
+}
+
+.menu__button_image {
+  width: 100%;
+  background-image: url(../../../images/exit_white.svg);
+  background-size: 24px 24px;
+  background-repeat: no-repeat;
+  background-position: calc(100% - 63px) center;
+  padding-right: 50px;
+  padding-left: 15px;
+}
+
+.menu__button_image_white {
+  background-image: url(../../../images/exit.svg);
+}
+
+@media screen and (min-width: 768px) {
+  .menu {
+    width: 600px;
+    height: inherit;
+    flex-flow: row;
+    align-items: center;
+    justify-content: flex-end;
+    font-size: 16px;
+    padding-right: 40px;
+    margin: 0;
+  }
+
+  .menu_screen_wide {
+    display: flex;
+    visibility: visible;
+  }
+
+  .menu_screen_narrow {
+    display: none;
+    visibility: hidden;
+  }
+
+  .menu__item {
+    width: auto;
+    height: inherit;
+    display: flex;
+    line-height: 24px;
+    align-items: center;
+    align-self: center;
+    padding: 0 30px 0 30px;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .menu__item_active {
+    border-bottom: 2px solid;
+    box-sizing: border-box;
+    cursor: default;
+  }
+
+  .menu__button {
+    height: 40px;
+    margin-left: 20px;
+  }
+
+  .menu__button_image {
+    width: auto;
+    background-position: calc(100% - 13px) center;
+  }
+
+  .menu__button_image_none {
+    width: 152px;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .menu {
+    font-size: 18px;
+    padding-right: 104px;
+  }
+}

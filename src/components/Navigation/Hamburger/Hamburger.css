@@ -1,0 +1,25 @@
+.nav__humburger {
+  width: 24px;
+  height: 24px;
+  background-image: url(../../../images/hunburger_menu_white.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin: 0 16px 0 0;
+}
+
+.nav__humburger_clicked {
+  background-image: url(../../../images/close.svg);
+}
+
+.nav__humburger_theme_white {
+  background-image: url(../../../images/hunburger_menu_black.svg);
+}
+
+@media screen and (min-width: 768px) {
+  .nav__humburger {
+    display: none;
+    visibility: hidden;
+    user-select: none;
+  }
+}

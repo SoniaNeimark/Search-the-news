@@ -66,6 +66,11 @@
   margin: 16px 0 28px 0;
 }
 
+.form__input_error_bottom {
+  text-align: center;
+  transform: translateY(16px)
+}
+
 .form__bottom_alert {
   text-align: left;
 }

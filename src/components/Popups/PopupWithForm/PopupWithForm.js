@@ -2,9 +2,12 @@ import Popup from "../Popup/Popup";
 import InputWithErrorField from "../InputWithErrorField/InputWithErrorField";
 
 const PopupWithForm = (props) => {
+  const { values, errors } = props;
   const handleSubmit = (e) => {
     e.preventDefault();
-    props.popup.signupPopup ? props.setSignupSuccess(true) : props.handleSubmitLogin();
+    props.popup.signupPopup
+      ? props.setSignupSuccess(true)
+      : props.handleSubmitLogin();
   };
   const handleSuccess = () => {
     props.setPopup({ PopupWithFormIsOpen: true });
@@ -30,6 +33,8 @@ const PopupWithForm = (props) => {
       <form
         className={`form${props.signupSuccess ? " form_alert" : ""}`}
         onSubmit={(e) => handleSubmit(e)}
+        onChange={(e) => props.handleChange(e)}
+        onFocus={() => props.setSubmitFormError("")}
       >
         <div className="form__content">
           <h2 className="form__title">
@@ -42,13 +47,16 @@ const PopupWithForm = (props) => {
           {!props.signupSuccess ? (
             <>
               <InputWithErrorField
-                error={{ message: "test" }}
+                values={values}
+                errors={errors}
                 title="Email"
                 name="email"
                 type="email"
                 placeholder="Enter email"
               />
               <InputWithErrorField
+                values={values}
+                errors={errors}
                 title="Password"
                 name="password"
                 type="password"
@@ -57,6 +65,8 @@ const PopupWithForm = (props) => {
               />
               {props.popup.signupPopup ? (
                 <InputWithErrorField
+                  values={values}
+                  errors={errors}
                   title="Username"
                   name="username"
                   type="text"
@@ -65,8 +75,14 @@ const PopupWithForm = (props) => {
                   maxLength={30}
                 />
               ) : null}
-
-              <button className={`submit-button${props.isValid ? " submit-button_active" : ""}`} type="submit" disabled={!props.isValid}>
+              {props.submitFormError ? <p className="form__input form__input_error form__input_error_bottom">{props.submitFormError}</p> : null}
+              <button
+                className={`submit-button${
+                  props.isValid ? " submit-button_active" : ""
+                }`}
+                type="submit"
+                disabled={!props.isValid}
+              >
                 {!props.popup.signupPopup ? "Sign in" : "Sign up"}
               </button>
             </>
@@ -79,7 +95,9 @@ const PopupWithForm = (props) => {
           >
             {!props.signupSuccess ? "or " : ""}
             <span className="form__link hover-opacity" onClick={handleLink}>
-              {props.popup.signupPopup || props.signupSuccess ? "Sign in" : "Sign up"}
+              {props.popup.signupPopup || props.signupSuccess
+                ? "Sign in"
+                : "Sign up"}
             </span>
           </p>
         </div>

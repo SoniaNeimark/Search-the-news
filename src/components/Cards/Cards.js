@@ -5,22 +5,39 @@ function Cards(props) {
   const [arrIndexes, setArrIndexes] = useState([0]);
   const location = props.location;
   const len = props.articles.length;
+  const handleSaveArticle = props.handleSaveArticle;
+  const loggedIn = props.loggedIn;
   let arr = [];
 
-  const renderCards = (arr, prefix) => {
-    return arr.map((article) => {
-      const key = article._id ? article._id : `${prefix}${arr.indexOf(article)}`;
-      const id = article._id ? article._id : key;
+  const renderCards = (arrToRender, prefix) => {
+    console.log()
+    if (arrToRender && arrToRender !== null && !Array.isArray(arrToRender)) {
       return (
         <Card
-          article={article}
+          article={arrToRender}
+          handleSaveArticle={handleSaveArticle}
           location={location}
-          loggedIn={props.loggedIn}
-          key={id}
-          id={id}
+          loggedIn={loggedIn}
         />
       );
-    });
+    } else if (Array.isArray(arrToRender)) {
+      return arrToRender.map((item) => {
+        const key = item._id ? item._id : `${prefix}${arrToRender.indexOf(item)}`;
+        const id = item._id ? item._id : key;
+        return (
+          <Card
+            article={item}
+            handleSaveArticle={handleSaveArticle}
+            location={location}
+            loggedIn={loggedIn}
+            key={id}
+            id={id}
+          />
+        );
+      });
+    } else {
+      return null;
+    }
   };
 
   const sliceArticlesArr = () => {

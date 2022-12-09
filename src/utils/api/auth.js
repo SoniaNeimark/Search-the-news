@@ -15,3 +15,15 @@ export const authorize = (email, password) => {
       throw new Error("Something went wrong");
     });
 };
+
+export const getUser = (token) => {
+  setHeaders(token);
+  return fetch(`${baseUrl}/users/me`, {
+    method: "GET",
+    headers: { ...headers },
+  })
+    .then((res) => checkResponse(res))
+    .then((data) => {
+        return data
+    });
+};

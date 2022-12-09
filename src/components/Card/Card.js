@@ -1,11 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 function Card(props) {
-  const [saved, setSaved] = useState(false);
+  const savedArray = props.savedArticles//JSON.parse(localStorage.getItem("savedArticles"));
+  const checkIfSaved = (item) => {
+    return item.link === props.article.link;
+  };
+  const isSaved = () => {
+    if (Array.isArray(savedArray) && savedArray.length === 1) {
+      return checkIfSaved(savedArray[0]);
+    } else if (Array.isArray(savedArray)) {
+      return savedArray.some(checkIfSaved);
+    }
+    return false;
+  };
+  const savedState = isSaved();
+
+  const [saved, setSaved] = useState(savedState);
+
+  const handleCardClick = () => {
+    if (!saved) {
+      return props.handleSaveArticle(props.article);
+    }
+    return setSaved(false);
+  };
+
+  useEffect(() => {
+    const setSavedState = () => {
+      if (savedState && savedState !== null) {
+        return setSaved(true);
+      }
+      return setSaved(false);
+    };
+    setSavedState();
+  }, [savedState]);
   return (
     <li className="card" id={props.id}>
       <img
         className="card__image"
-        src={props.article.link}
+        src={props.article.image}
         alt={props.article.title}
       />
       {props.location.pathname === "/saved" ? (
@@ -18,10 +49,10 @@ function Card(props) {
           props.location.pathname === "/saved" ? " card__label_trashbin" : ""
         }${saved ? " card__label_marked" : ""}`}
         disabled={!props.loggedIn}
-        onClick={
+        onClick={() =>
           props.location.pathname === "/saved"
             ? props.deleteCard
-            : () => (!saved ? setSaved(true) : setSaved(false))
+            : handleCardClick()
         }
       ></button>
       {(props.loggedIn && props.location.pathname === "/saved") ||
@@ -37,7 +68,7 @@ function Card(props) {
 
       <article className="card__article">
         <div className="card__text">
-          <p className="card__date">{props.article.date}</p>
+          <p className="card__date">{`${saved}`}</p>
           <h2 className="card__title">{props.article.title}</h2>
           <p className="card__paragraph">{props.article.text}</p>
         </div>

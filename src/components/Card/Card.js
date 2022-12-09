@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 function Card(props) {
-  const savedArray = props.savedArticles//JSON.parse(localStorage.getItem("savedArticles"));
+  const savedArray = JSON.parse(localStorage.getItem("savedArticles"));
   const checkIfSaved = (item) => {
     return item.link === props.article.link;
   };

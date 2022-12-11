@@ -1,7 +1,7 @@
 import { baseUrl, headers, setHeaders } from "../constants/constants";
 import { checkResponse } from "../callbacks/callbacks";
 
-export const authorize = (email, password) => {
+export const authorize = ({ email, password }) => {
   return fetch(`${baseUrl}/signin`, {
     method: "POST",
     headers: { ...headers },
@@ -24,6 +24,6 @@ export const getUser = (token) => {
   })
     .then((res) => checkResponse(res))
     .then((data) => {
-        return data
+      return data;
     });
 };

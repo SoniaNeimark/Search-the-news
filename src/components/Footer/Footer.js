@@ -7,7 +7,7 @@ function Footer(props) {
     <footer className="footer">
       <nav className="footer__nav">
         <div className="footer__text-links">
-          <a className="footer__link hover-opacity" href={props.location.pathname === "/" ? "#nav" : "/"}>
+          <a className="footer__link hover-opacity" href={props.location.pathname === props.homePath ? "#nav" : "/"}>
             Home
           </a>
           <a

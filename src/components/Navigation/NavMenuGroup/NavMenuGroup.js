@@ -1,4 +1,12 @@
+import React, { useContext } from "react";
+import { CurrentUserContext } from "../../../utils/cotexts/CurrentUserContext";
 function NavMenuGroup(props) {
+  const user = useContext(CurrentUserContext)
+  const handleNavigateToSaved = () => {
+    //props.handleSaveArray();
+    //console.log(props.savedArticles);
+    props.handleNavigate(props.savedNewsPath);
+  };
   return (
     <div
       className={`menu${props.white ? " menu_theme_white" : ""}${
@@ -14,7 +22,7 @@ function NavMenuGroup(props) {
       {props.loggedIn ? (
         <p
           className={`menu__item${props.white ? " menu__item_active" : ""}`}
-          onClick={() => props.handleNavigate("/saved")}
+          onClick={handleNavigateToSaved}
         >
           Saved articles
         </p>
@@ -27,9 +35,9 @@ function NavMenuGroup(props) {
               }`
             : " menu__button_image_none"
         }`}
-        onClick={!props.loggedIn ? props.signIn : props.logOut}
+        onClick={!props.loggedIn ? props.signIn : props.handleLogOut}
       >
-        {props.loggedIn ? props.currentUser.name : "Sign in"}
+        {props.loggedIn ? user.name : "Sign in"}
       </button>
     </div>
   );

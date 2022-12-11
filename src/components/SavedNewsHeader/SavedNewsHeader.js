@@ -1,16 +1,19 @@
+import React, { useContext } from "react";
+import { CurrentUserContext } from "../../utils/cotexts/CurrentUserContext";
 import DropOutPopup from "../Popups/DropOutPopup/DropOutPopup";
 import Navigation from "../Navigation/Navigation";
 
 function SavedNewsHeader(props) {
+  const user = useContext(CurrentUserContext);
   const getKeys = () => {
-    if (Array.isArray(props.savedArticles)) {
+    if (props.savedArticles.length > 0) {
       return props.savedArticles.map((article) => article["keyword"]);
     }
     return false;
   };
-  
+
   const allKeys = getKeys();
-  
+
   const uniqueKeys = !allKeys
     ? ""
     : Array.isArray(allKeys)
@@ -33,14 +36,19 @@ function SavedNewsHeader(props) {
           Saved articles
         </p>
         <h2 className="header__title header__title_theme_white">
-          {props.currentUser.name}, you have{" "}
-          {props.savedArticles && Array.isArray(props.savedArticles) && props.savedArticles.length === 1
-            ? "1 saved article" : (props.savedArticles.length > 1 ? props.savedArticles.length
-            : "no") + " saved articles"}
+          {user.name}, you have{" "}
+          {!Array.isArray(props.savedArticles) || !props.savedArticles.length
+            ? "no saved articles"
+            : props.savedArticles.length > 1
+            ? props.savedArticles.length + " saved articles"
+            : "1 saved article"}
         </h2>
-        {props.savedArticles && Array.isArray(props.savedArticles) ? (
+        {props.savedArticles.length > 0 ? (
           <h3 className="paragraph paragraph_place_header">
-            {Array.isArray(uniqueKeys) && uniqueKeys.length > 1 ? "By keywords: " : "By keyword: "}<b>{keywords}</b>
+            {Array.isArray(uniqueKeys) && uniqueKeys.length > 1
+              ? "By keywords: "
+              : "By keyword: "}
+            <b>{keywords}</b>
           </h3>
         ) : null}
       </div>

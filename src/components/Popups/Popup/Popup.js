@@ -2,7 +2,7 @@ import React from "react";
 const Popup = (props) => {
   const handleClickOutside = (e) => {
     if (e.target === e.currentTarget) {
-      props.closePopup();
+      props.handleClosePopup();
       return;
     }
     return;

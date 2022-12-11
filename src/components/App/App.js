@@ -8,6 +8,7 @@ import {
   useNavigate,
   Navigate,
 } from "react-router-dom";
+import { homePath, savedNewsPath, defaultPath } from "../../utils/constants/constants";
 import { useFormAndValidation } from "../../utils/hooks/UseFormAndValidation";
 import * as auth from "../../utils/api/auth";
 import * as mainApi from "../../utils/api/MainApi";
@@ -24,10 +25,13 @@ import About from "../About/About";
 import Footer from "../Footer/Footer";
 
 function App() {
-  //const isLoggedIn = localStorage.getItem("loggedIn");
+  const isLoggedIn = localStorage.getItem("loggedIn");
   const isTokenIssued = localStorage.getItem("token");
-  const areSavedArticles = JSON.parse(localStorage.getItem("savedArticles"));
-  //const [loggedIn, setLoggedIn] = useState(isLoggedIn);
+  const test = localStorage.getItem("savedArticles");
+  const areSavedArticles = test && test !== null ? JSON.parse(test) : [];
+  const [articlesToSave, setArticlesToSave] = useState([]);
+  const [articlesToRemove, setArticlesToRemove] = useState([]);
+  const [loggedIn, setLoggedIn] = useState(isLoggedIn);
   const [token, setToken] = useState(isTokenIssued);
   const navigate = useNavigate();
   const location = useLocation();
@@ -38,15 +42,15 @@ function App() {
   //const [isValid, setIsValid] = useState(false);
   const arr = sampleArray;
   const [articles, setArticles] = useState([]);
-  const [savedArticles, setSavedArticles] = useState(areSavedArticles);
+  const [savedArticles, setSavedArticles] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
   const [submitFormError, setSubmitFormError] = useState("");
-  const loggedIn = token ? true : false;
+  //const loggedIn = token ? true : false;
 
   //useEffect(() => localStorage.clear(), [])
-  useEffect(() => console.log(localStorage));
+  useEffect(() => console.log(savedArticles));
 
-  /*useEffect(() => {
+  useEffect(() => {
     const setLoggedinState = () => {
       if (isLoggedIn && isLoggedIn !== null) {
         return setLoggedIn(true);
@@ -54,11 +58,11 @@ function App() {
       return setLoggedIn(false);
     };
     setLoggedinState();
-  }, [isLoggedIn]);*/
+  }, [isLoggedIn]);
 
   useEffect(() => {
     const setTokenState = () => {
-      console.log("token")
+      console.log("token");
       if (isTokenIssued && isTokenIssued !== null) {
         return setToken(isTokenIssued);
       }
@@ -84,10 +88,23 @@ function App() {
           .getUser(token)
           .then((user) => {
             if (user.email) {
-              return setCurrentUser(user);
+              setCurrentUser(user);
+              return mainApi
+                .getArticles(token)
+                .then((articlesArrr) => {
+                  if (articlesArrr) {
+                    return localStorage.setItem(
+                      "savedArticles",
+                      JSON.stringify(articlesArrr)
+                    );
+                  }
+                  return localStorage.setItem("savedArticles", null);
+                })
+                .catch((err) => console.log(err));
             }
             setCurrentUser({});
             localStorage.clear();
+            return;
           })
           .catch((err) => {
             err && console.log(err);
@@ -96,7 +113,7 @@ function App() {
       return localStorage.clear();
     };
     checkToken();
-  }, [token]);
+  }, [token, location]);
 
   /*useEffect(() => {
     
@@ -109,7 +126,7 @@ function App() {
     setSavedArticlesState()
   }, [areSavedArticles]);*/
 
-  useEffect(() => {
+  /*useEffect(() => {
     const getSavedArticles = () => {
       if (token) {
         return mainApi
@@ -129,7 +146,7 @@ function App() {
     };
 
     getSavedArticles();
-  }, [token]);
+  }, [token]);*/
 
   const closePopup = () => setPopup({});
 
@@ -180,6 +197,7 @@ function App() {
         if (data.token) {
           //handleLogIn();
           localStorage.setItem("token", data.token);
+          localStorage.setItem("loggedIn", true);
           handleClosePopup();
           return;
         }
@@ -191,21 +209,61 @@ function App() {
   };
 
   const handleSaveArticle = (articleObj) => {
-    /*"keyword";
-    "title";
-    "text";
-    "date";
-    "source";
-    "link";
-    "image";*/
     return mainApi
       .addArticle(articleObj, token)
       .then((article) => {
         if (article) {
-          const newArr = [...areSavedArticles, article];
-          return localStorage.setItem("savedArticles", JSON.stringify(newArr));
+          const newArr = Array.isArray(savedArticles)
+            ? [...savedArticles, article]
+            : [article];
+          const uniqueArticles = Array.isArray(newArr)
+            ? [...new Set(newArr)]
+            : [newArr];
+          setSavedArticles(uniqueArticles);
+          return localStorage.setItem(
+            "savedArticles",
+            JSON.stringify(uniqueArticles)
+          );
         }
         throw Error("ooooooops");
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const handleSaveArray = () => {
+    const arrToSave = Array.isArray(articlesToSave)
+      ? [...new Set(articlesToSave)]
+      : [articlesToSave];
+    if (Array.isArray(arrToSave)) {
+      return arrToSave.map((item) => {
+        return handleSaveArticle(item);
+      })
+    } else {
+      console.log("Nothing to save");
+    }
+  };
+
+  const handleDeleteArticle = (article) => {
+    console.log(article._id);
+    return mainApi
+      .deleteArticle(token, article._id)
+      .then(() => {
+        
+        setArticles((state) =>
+          state.filter((currentCard) => {
+            return currentCard !== article;
+          })
+        );
+        
+      })
+      .then(() => {
+        setSavedArticles((state) =>
+          state.filter((currentArticle) => {
+            return currentArticle !== article;
+          })
+        );
+        console.log(savedArticles)
+        return localStorage.setItem(JSON.stringify(savedArticles));
       })
       .catch((err) => console.log(err));
   };
@@ -223,9 +281,11 @@ function App() {
     articles,
     arr,
     savedArticles,
+    setSavedArticles,
     setArticles,
     setStartSearch,
     closePopup,
+    handleClosePopup,
     popup,
     setPopup,
     navigate,
@@ -233,40 +293,43 @@ function App() {
     submitFormError,
     setSubmitFormError,
     handleSaveArticle,
+    handleDeleteArticle,
+    articlesToSave,
+    setArticlesToSave,
+    handleSaveArray,
   };
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <DocPropsContext.Provider value={props}>
+        <Routes>
+          <Route path={homePath} element={<Header {...props} />} />
+          <Route
+            path={savedNewsPath}
+            element={
+              <ProtectedRout loggedIn={loggedIn}>
+                <SavedNewsHeader {...props} replace />
+              </ProtectedRout>
+            }
+          />
+          <Route path={defaultPath} element={<Navigate to={homePath} />} />
+        </Routes>
+        <Main>
+          {location.pathname !== homePath ? null : startSearch.started &&
+            articles.length < 1 ? (
+            <Preloader />
+          ) : startSearch.finished && articles.length < 1 ? (
+            <NotFound />
+          ) : null}
 
-      <Routes>
-        <Route path={"/"} element={<Header {...props} />} />
-        <Route
-          path={"/saved"}
-          element={
-            <ProtectedRout loggedIn={loggedIn}>
-              <SavedNewsHeader {...props} replace />
-            </ProtectedRout>
-          }
-        />
-        <Route path="*" element={<Navigate to={"/"} />} />
-      </Routes>
-      <Main>
-        {location.pathname !== "/" ? null : startSearch.started &&
-          articles.length < 1 ? (
-          <Preloader />
-        ) : startSearch.finished && articles.length < 1 ? (
-          <NotFound />
-        ) : null}
-
-        {location.pathname === "/saved" ||
-        (articles.length && articles.length > 0) ? (
-          <Cards {...props} />
-        ) : null}
-        {location.pathname === "/" ? <About /> : null}
-      </Main>
-      <Footer {...props} />
-      <PopupWithForm {...props} />
+          {location.pathname === savedNewsPath ||
+          (articles.length && articles.length > 0) ? (
+            <Cards {...props} />
+          ) : null}
+          {location.pathname === homePath ? <About /> : null}
+        </Main>
+        <Footer {...props} />
+        <PopupWithForm {...props} />
       </DocPropsContext.Provider>
     </CurrentUserContext.Provider>
   );

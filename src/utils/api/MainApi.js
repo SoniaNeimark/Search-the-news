@@ -17,3 +17,11 @@ export const getArticles = (token) => {
     headers: { ...headers },
   }).then((res) => checkResponse(res));
 };
+
+export const deleteArticle = (token, articleId) => {
+  setHeaders(token);
+  return fetch(`${baseUrl}/articles/${articleId}`, {
+    method: "DELETE",
+    headers: { ...headers },
+  }).then((res) => checkResponse(res));
+};

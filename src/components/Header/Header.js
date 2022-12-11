@@ -17,8 +17,9 @@ function Header(props) {
           onSubmit={(e) => {
             e.preventDefault();
             props.setStartSearch({ started: true });
-            props.setArticles(props.arr);
+            props.setFoundArticles(props.sampleArray);
             props.setStartSearch({ finished: true });
+            console.log(props.foundArticles)
           }}
         >
           <input

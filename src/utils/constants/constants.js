@@ -10,3 +10,13 @@ export const setHeaders = (token) => {
   headers.authorization = auth;
   return headers;
 };
+
+const homePath = "/";
+const savedNewsPath = "/saved-news";
+const defaultPath = "*";
+
+export {
+  homePath,
+  savedNewsPath,
+  defaultPath,
+};

@@ -9,3 +9,15 @@ export const checkResponse = (res) => {
     return Promise.reject(error.message);
   });
 };
+
+export const checkArray = (arr, callback) => {
+  if (!Array.isArray(arr) || (Array.isArray(arr) && arr.length === 0)) {
+    return false;
+  } else if (Array.isArray(arr) && arr.length && arr.length === 1) {
+    return callback(arr[0]);
+  } else if (Array.isArray(arr) && arr.length && arr.length > 1) {
+    return arr.some(callback);
+  } else {
+    return false
+  }
+};

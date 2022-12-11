@@ -1,39 +1,39 @@
 import React, { useState } from "react";
+import { savedNewsPath } from "../../utils/constants/constants";
 import Card from "../Card/Card";
+import CardNew from "../Card/CardNew";
 
 function Cards(props) {
+  const cardProps = {
+    location: props.location,
+    handleAddArticle: props.handleAddArticle,
+    loggedIn: props.loggedIn,
+    setSavedArticles: props.setSavedArticles, 
+    areSavedArticles: props.areSavedArticles,
+    savedArticles: props.savedArticles,
+    articlesToSave: props.articlesToSave,
+    articlesToRemove: props.articlesToRemove,
+    setArticlesToSave: props.setArticlesToSave,
+    setArticlesToRemove: props.setArticlesToRemove,
+    handleDeleteArticle: props.handleDeleteArticle,
+    savedNewsPath: savedNewsPath
+  };
+  const len = props.foundArticles.length;
   const [arrIndexes, setArrIndexes] = useState([0]);
-  const location = props.location;
-  const len = props.articles.length;
-  const handleSaveArticle = props.handleSaveArticle;
-  const loggedIn = props.loggedIn;
+
   let arr = [];
 
   const renderCards = (arrToRender, prefix) => {
-    console.log()
+    console.log();
     if (arrToRender && arrToRender !== null && !Array.isArray(arrToRender)) {
-      return (
-        <Card
-          article={arrToRender}
-          handleSaveArticle={handleSaveArticle}
-          location={location}
-          loggedIn={loggedIn}
-        />
-      );
+      return <CardNew article={arrToRender} handleAddArticle={cardProps.handleAddArticle} {...cardProps} />;
     } else if (Array.isArray(arrToRender)) {
       return arrToRender.map((item) => {
-        const key = item._id ? item._id : `${prefix}${arrToRender.indexOf(item)}`;
+        const key = item._id
+          ? item._id
+          : `${prefix}${arrToRender.indexOf(item)}`;
         const id = item._id ? item._id : key;
-        return (
-          <Card
-            article={item}
-            handleSaveArticle={handleSaveArticle}
-            location={location}
-            loggedIn={loggedIn}
-            key={id}
-            id={id}
-          />
-        );
+        return <CardNew article={item} key={id} id={id} {...cardProps} />;
       });
     } else {
       return null;
@@ -48,8 +48,8 @@ function Cards(props) {
     ) {
       arr[i] =
         j < len - 1
-          ? props.articles.slice(j, num)
-          : props.articles.slice(j - len);
+          ? props.foundArticles.slice(j, num)
+          : props.foundAarticles.slice(j - len);
       i++;
     }
   };
@@ -58,10 +58,11 @@ function Cards(props) {
   return (
     <section className="cards">
       <h2 className="cards__title">
-        {location.pathname !== "/saved" && "Search results"}
+        {cardProps.location.pathname !== savedNewsPath &&
+          "Search results"}
       </h2>
       <ul className="cards__gallery">
-        {location.pathname === "/saved"
+        {cardProps.location.pathname === savedNewsPath
           ? renderCards(props.savedArticles, "s")
           : arr.length > 0
           ? arrIndexes.map((arrIndex) => {
@@ -72,7 +73,7 @@ function Cards(props) {
       {!arr.length ||
       arr.length < 1 ||
       arrIndexes.length === arr.length ||
-      location.pathname === "/saved" ? null : (
+      cardProps.location.pathname === savedNewsPath ? null : (
         <button
           className="button cards__button"
           type="button"

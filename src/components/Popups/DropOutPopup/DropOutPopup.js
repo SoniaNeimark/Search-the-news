@@ -7,7 +7,7 @@ function DropOutPopup(props) {
     <Popup
       opened={props.popup.clicked}
       nav={props.popup.clicked}
-      closePopup={props.closePopup}
+      {...props}
     >
       <div className="drop-out">
         <TopNavBar {...props} >

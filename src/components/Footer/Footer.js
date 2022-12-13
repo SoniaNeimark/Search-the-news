@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import gitIcon from "../../images/github_no_frame.svg";
 import fbIcon from "../../images/fb_no_frame.svg";
 function Footer(props) {
@@ -7,9 +8,16 @@ function Footer(props) {
     <footer className="footer">
       <nav className="footer__nav">
         <div className="footer__text-links">
-          <a className="footer__link hover-opacity" href={props.location.pathname === props.homePath ? "#nav" : "/"}>
-            Home
-          </a>
+          {props.location.pathname !== props.REACT_APP_HOME_PATH ? (
+            <Link to={props.REACT_APP_HOME_PATH}>
+              <p className="footer__link hover-opacity">Home</p>
+            </Link>
+          ) : (
+            <Link reloadDocument to={props.REACT_APP_HOME_PATH}>
+              <p className="footer__link hover-opacity">Home</p>
+            </Link>
+          )}
+
           <a
             className="footer__link hover-opacity"
             href="https://practicum.com/en-isr/"
@@ -26,7 +34,11 @@ function Footer(props) {
             target="_blank"
             rel="noreferrer noopener"
           >
-            <img className="footer__icon hover-opacity" src={git} alt="Link to Git" />
+            <img
+              className="footer__icon hover-opacity"
+              src={git}
+              alt="Link to Git"
+            />
           </a>
           <a
             className="footer__link"
@@ -34,7 +46,11 @@ function Footer(props) {
             target="_blank"
             rel="noreferrer noopener"
           >
-            <img className="footer__icon hover-opacity" src={fb}  alt="Link to FaceBook"/>
+            <img
+              className="footer__icon hover-opacity"
+              src={fb}
+              alt="Link to FaceBook"
+            />
           </a>
         </div>
       </nav>

@@ -31,6 +31,7 @@ const PopupWithForm = (props) => {
         onClick={props.closePopup}
       ></button>
       <form
+        name="popupform"
         className={`form${props.signupSuccess ? " form_alert" : ""}`}
         onSubmit={(e) => handleSubmit(e)}
         onChange={(e) => props.handleChange(e)}
@@ -75,7 +76,11 @@ const PopupWithForm = (props) => {
                   maxLength={30}
                 />
               ) : null}
-              {props.submitFormError ? <p className="form__input form__input_error form__input_error_bottom">{props.submitFormError}</p> : null}
+              {props.submitFormError ? (
+                <p className="form__input form__input_error form__input_error_bottom">
+                  {props.submitFormError}
+                </p>
+              ) : null}
               <button
                 className={`submit-button${
                   props.isValid ? " submit-button_active" : ""

@@ -3,9 +3,7 @@ import { CurrentUserContext } from "../../../utils/cotexts/CurrentUserContext";
 function NavMenuGroup(props) {
   const user = useContext(CurrentUserContext)
   const handleNavigateToSaved = () => {
-    //props.handleSaveArray();
-    //console.log(props.savedArticles);
-    props.handleNavigate(props.savedNewsPath);
+    props.handleNavigate(props.REACT_APP_SAVED_NEWS_PATH);
   };
   return (
     <div

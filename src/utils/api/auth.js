@@ -1,5 +1,11 @@
-import { baseUrl, headers, setHeaders } from "../constants/constants";
+import { headers, setHeaders } from "../constants/constants";
 import { checkResponse } from "../callbacks/callbacks";
+
+const devMode = process.env.NODE_ENV;
+export const baseUrl =
+  devMode === "development"
+    ? process.env.REACT_APP_BASE_URL_DEV
+    : process.env.REACT_APP_BASE_URL_PRO;
 
 export const authorize = ({ email, password }) => {
   return fetch(`${baseUrl}/signin`, {

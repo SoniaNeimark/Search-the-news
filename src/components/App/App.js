@@ -1,6 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { CurrentUserContext } from "../../utils/cotexts/CurrentUserContext";
-import { DocPropsContext } from "../../utils/cotexts/DocPropsContext";
+import React, { useState, useEffect } from "react";
 import {
   Routes,
   Route,
@@ -8,11 +6,12 @@ import {
   useNavigate,
   Navigate,
 } from "react-router-dom";
-import { homePath, savedNewsPath, defaultPath } from "../../utils/constants/constants";
+import { CurrentUserContext } from "../../utils/cotexts/CurrentUserContext";
 import { useFormAndValidation } from "../../utils/hooks/UseFormAndValidation";
 import * as auth from "../../utils/api/auth";
 import * as mainApi from "../../utils/api/MainApi";
-import { sampleArray } from "../../utils/sampleArray";
+import { getFoundArticles } from "../../utils/api/NewsApi";
+import { checkIfNotNull, checkIfSaved } from "../../utils/callbacks/callbacks";
 import Header from "../Header/Header";
 import ProtectedRout from "../ProtectedRout/ProtectedRout";
 import SavedNewsHeader from "../SavedNewsHeader/SavedNewsHeader";
@@ -24,150 +23,157 @@ import Cards from "../Cards/Cards";
 import About from "../About/About";
 import Footer from "../Footer/Footer";
 
-function App() {
-  const isLoggedIn = localStorage.getItem("loggedIn");
-  const isTokenIssued = localStorage.getItem("token");
-  const test = localStorage.getItem("savedArticles");
-  const areSavedArticles = test && test !== null ? JSON.parse(test) : [];
-  const [articlesToSave, setArticlesToSave] = useState([]);
-  const [articlesToRemove, setArticlesToRemove] = useState([]);
-  const [loggedIn, setLoggedIn] = useState(isLoggedIn);
-  const [token, setToken] = useState(isTokenIssued);
-  const navigate = useNavigate();
+const App = () => {
+  //localStorage.clear()
+  //  variables
+  const {
+    REACT_APP_HOME_PATH,
+    REACT_APP_SAVED_NEWS_PATH,
+    REACT_APP_DEFAULT_PATH,
+  } = process.env;
   const location = useLocation();
   const validate = useFormAndValidation();
+  const navigate = useNavigate();
+
+  const isTokenIssued = checkIfNotNull(localStorage.getItem("token"), "");
+  const isLoggedIn = checkIfNotNull(localStorage.getItem("loggedIn"), false);
+  const isCurrentUser = checkIfNotNull(
+    JSON.parse(localStorage.getItem("currentUser")),
+    {}
+  );
+  const areSavedArticles = checkIfNotNull(
+    JSON.parse(localStorage.getItem("savedArticles")),
+    []
+  );
+
+  const areFoundArticles = checkIfNotNull(
+    JSON.parse(localStorage.getItem("foundArticles")),
+    []
+  );
+
+  const [token, setToken] = useState(isTokenIssued);
+  const [loggedIn, setLoggedIn] = useState(isLoggedIn);
+  const [currentUser, setCurrentUser] = useState(isCurrentUser);
+
+  const [savedArticles, setSavedArticles] = useState(areSavedArticles);
+
+  const [foundArticles, setFoundArticles] = useState(areFoundArticles);
   const [popup, setPopup] = useState({});
   const [startSearch, setStartSearch] = useState({});
-  const [signupSuccess, setSignupSuccess] = useState(false);
-  //const [isValid, setIsValid] = useState(false);
-  const arr = sampleArray;
-  const [articles, setArticles] = useState([]);
-  const [savedArticles, setSavedArticles] = useState([]);
-  const [currentUser, setCurrentUser] = useState({});
-  const [submitFormError, setSubmitFormError] = useState("");
-  //const loggedIn = token ? true : false;
 
-  //useEffect(() => localStorage.clear(), [])
-  useEffect(() => console.log(savedArticles));
-
-  useEffect(() => {
-    const setLoggedinState = () => {
-      if (isLoggedIn && isLoggedIn !== null) {
-        return setLoggedIn(true);
-      }
-      return setLoggedIn(false);
-    };
-    setLoggedinState();
-  }, [isLoggedIn]);
-
-  useEffect(() => {
-    const setTokenState = () => {
-      console.log("token");
-      if (isTokenIssued && isTokenIssued !== null) {
-        return setToken(isTokenIssued);
-      }
-      return setToken("");
-    };
-    setTokenState();
-  }, [isTokenIssued]);
-
-  /* useEffect(() => {
-    const setSavedArticlesState = () => {
-      if (areSavedArticles && areSavedArticles !== null) {
-        return setSavedArticles(areSavedArticles);
-      }
-      return setSavedArticles([]);
-    };
-    setSavedArticlesState();
-  }, [areSavedArticles]);*/
-
-  useEffect(() => {
-    const checkToken = () => {
-      if (token) {
-        return auth
-          .getUser(token)
-          .then((user) => {
-            if (user.email) {
-              setCurrentUser(user);
-              return mainApi
-                .getArticles(token)
-                .then((articlesArrr) => {
-                  if (articlesArrr) {
-                    return localStorage.setItem(
-                      "savedArticles",
-                      JSON.stringify(articlesArrr)
-                    );
-                  }
-                  return localStorage.setItem("savedArticles", null);
-                })
-                .catch((err) => console.log(err));
-            }
-            setCurrentUser({});
-            localStorage.clear();
-            return;
-          })
-          .catch((err) => {
-            err && console.log(err);
-          });
-      }
-      return localStorage.clear();
-    };
-    checkToken();
-  }, [token, location]);
-
-  /*useEffect(() => {
-    
-    const setSavedArticlesState = () => {
-      if (areSavedArticles && areSavedArticles !== null) {
-        return setSavedArticles(areSavedArticles);
-      }
-      return setSavedArticles([]);
-    };
-    setSavedArticlesState()
-  }, [areSavedArticles]);*/
-
-  /*useEffect(() => {
-    const getSavedArticles = () => {
-      if (token) {
-        return mainApi
-          .getArticles(token)
-          .then((articlesArrr) => {
-            if (articlesArrr) {
-              return localStorage.setItem(
-                "savedArticles",
-                JSON.stringify(articlesArrr)
-              );
-            }
-            return localStorage.removeItem("savedArticles");
-          })
-          .catch((err) => console.log(err));
-      }
-      return;
-    };
-
-    getSavedArticles();
-  }, [token]);*/
-
-  const closePopup = () => setPopup({});
-
-  const handleClosePopup = () => {
-    closePopup();
-    validate.resetForm();
-    setSubmitFormError("");
-  };
-
+  // methods
   const signIn = () => setPopup({ PopupWithFormIsOpen: true, clicked: false });
 
-  const logOut = () => {
-    localStorage.clear();
-    navigate("/");
+  const closePopup = () => {
+    setPopup({});
+  };
+
+  const handleClosePopup = () => {
+    validate.resetForm();
     closePopup();
   };
 
-  /*useEffect(() => {
-    //setIsValid(true);
-    setSavedArticles(arr);
-  }, [arr]);*/
+  const handleNavigate = (path) => {
+    navigate(path);
+    closePopup();
+  };
+
+  //  set states
+  const setUser = (user) => {
+    if (user) {
+      setLoggedIn(true);
+      localStorage.setItem("loggedIn", true);
+      setCurrentUser(user);
+      localStorage.setItem("currentUser", JSON.stringify(user));
+      return;
+    }
+    localStorage.clear();
+    return;
+  };
+
+  const setSavedArticlesArr = (arr) => {
+    if (arr) {
+      setSavedArticles(arr);
+      localStorage.setItem("savedArticles", JSON.stringify(arr));
+      return;
+    }
+    localStorage.removeItem("savedArticles");
+    return;
+  };
+
+  const setFoundArticlesArr = (arr) => {
+    if (arr) {
+      setFoundArticles(arr);
+      localStorage.setItem("foundArticles", JSON.stringify(arr));
+      return;
+    }
+    localStorage.removeItem("foundArticles");
+    return;
+  };
+
+  //  hooks
+  useEffect(() => {
+    if (token) {
+      return setToken(token);
+    } else {
+      setToken("");
+      setLoggedIn(false);
+      localStorage.clear();
+      return;
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (loggedIn) {
+      setLoggedIn(true);
+      return;
+    } else {
+      setLoggedIn(false);
+      localStorage.clear();
+      return;
+    }
+  }, [loggedIn]);
+
+  useEffect(() => {
+    function setUserState(data) {
+      if (data) {
+        return setCurrentUser(data);
+      } else {
+        setCurrentUser({});
+        localStorage.clear();
+        return;
+      }
+    }
+    setUserState(currentUser);
+  }, [currentUser]);
+
+  useEffect(() => {
+    function setFoundArticlesState(data) {
+      if (data) {
+        setFoundArticles(data);
+        return;
+      } else {
+        setFoundArticles([]);
+        localStorage.setItem("foundArticles", []);
+        return;
+      }
+    }
+    setFoundArticlesState(foundArticles);
+  }, [foundArticles, loggedIn]);
+
+  useEffect(() => {
+    function setSavedArticlesState(data) {
+      if (data) {
+        setSavedArticles(data);
+        return;
+      } else {
+        setSavedArticles([]);
+        localStorage.setItem("savedArticles", []);
+        return;
+      }
+    }
+    setSavedArticlesState(savedArticles);
+  }, [savedArticles]);
 
   useEffect(() => {
     const closeByEscape = (evt) => {
@@ -179,160 +185,249 @@ function App() {
     return () => document.removeEventListener("keydown", closeByEscape);
   }, []);
 
-  const handleNavigate = (path) => {
-    navigate(path);
-    closePopup();
+  //  api-requests
+  ////  authorization api-requests and login handling
+  ////// token-check
+  const checkToken = (tokenIs) => {
+    if (tokenIs) {
+      return auth
+        .getUser(tokenIs)
+        .then((data) => {
+          if (data.email) {
+            setToken(tokenIs);
+            return data;
+          }
+          return false;
+        })
+        .catch((err) => console.log(err));
+    }
+    console.log(localStorage);
+    console.log("oops again");
+    return false;
   };
 
-  /*const handleLogIn = () => {
-    localStorage.setItem("loggedIn", true);
-  };*/
-
-  const handleSubmitLogin = () => {
-    const email = validate.values.email;
-    const password = validate.values.password;
-    return auth
-      .authorize(email, password)
-      .then((data) => {
-        if (data.token) {
-          //handleLogIn();
-          localStorage.setItem("token", data.token);
-          localStorage.setItem("loggedIn", true);
-          handleClosePopup();
+  ////// login handling
+  const handleLogIn = (user) => {
+    if (user) {
+      setUser(user);
+      const tokenIs = localStorage.getItem("token");
+      return getSavedArticlesArr(tokenIs)
+        .then((articles) => {
+          if (articles) {
+            setSavedArticlesArr(articles);
+            localStorage.setItem("savedArticles", JSON.stringify(articles));
+            return;
+          }
+          setSavedArticles([]);
+          localStorage.removeItem("savedArticles");
           return;
-        }
-        throw new Error("Something went wrong");
-      })
-      .catch((err) => {
-        return setSubmitFormError(err);
-      });
-  };
-
-  const handleSaveArticle = (articleObj) => {
-    return mainApi
-      .addArticle(articleObj, token)
-      .then((article) => {
-        if (article) {
-          const newArr = Array.isArray(savedArticles)
-            ? [...savedArticles, article]
-            : [article];
-          const uniqueArticles = Array.isArray(newArr)
-            ? [...new Set(newArr)]
-            : [newArr];
-          setSavedArticles(uniqueArticles);
-          return localStorage.setItem(
-            "savedArticles",
-            JSON.stringify(uniqueArticles)
-          );
-        }
-        throw Error("ooooooops");
-      })
-      .catch((err) => console.log(err));
-  };
-
-  const handleSaveArray = () => {
-    const arrToSave = Array.isArray(articlesToSave)
-      ? [...new Set(articlesToSave)]
-      : [articlesToSave];
-    if (Array.isArray(arrToSave)) {
-      return arrToSave.map((item) => {
-        return handleSaveArticle(item);
-      })
-    } else {
-      console.log("Nothing to save");
+        })
+        .catch((err) => console.log(err))
+        .finally(() => handleClosePopup());
     }
   };
 
-  const handleDeleteArticle = (article) => {
-    console.log(article._id);
-    return mainApi
-      .deleteArticle(token, article._id)
-      .then(() => {
-        
-        setArticles((state) =>
-          state.filter((currentCard) => {
-            return currentCard !== article;
-          })
-        );
-        
+  const handleLogOut = () => {
+    localStorage.clear();
+    setLoggedIn(false);
+    setFoundArticles([]);
+    setStartSearch({});
+    handleClosePopup();
+  };
+
+  const handleSubmitLogin = () => {
+    return auth
+      .authorize(validate.values)
+      .then((data) => {
+        if (data.token) {
+          localStorage.setItem("token", data.token);
+          return data.token;
+        }
+        return false;
       })
-      .then(() => {
-        setSavedArticles((state) =>
-          state.filter((currentArticle) => {
-            return currentArticle !== article;
-          })
-        );
-        console.log(savedArticles)
-        return localStorage.setItem(JSON.stringify(savedArticles));
+      .then((tokenGot) => {
+        if (tokenGot) {
+          return checkToken(tokenGot);
+        }
+        return false;
+      })
+      .then((data) => {
+        if (data) {
+          handleLogIn(data);
+          return;
+        }
+        localStorage.clear();
+        return;
+      })
+      .catch((err) => validate.setSubmitFormError(err));
+  };
+
+  ////  Main-api requests and saved articles handling
+  const getSavedArticlesArr = (tokenIs) => {
+    return mainApi
+      .getArticles(tokenIs)
+      .then((articles) => {
+        if (articles) {
+          return articles;
+        }
+        return false;
       })
       .catch((err) => console.log(err));
+  };
+
+  const handleAddArticle = (article) => {
+    return mainApi
+      .addArticle(article, token)
+      .then((article) => {
+        if (article) {
+          return getSavedArticlesArr(token)
+            .then((gotArticles) => {
+              if (gotArticles) {
+                setSavedArticlesArr(gotArticles);
+                return;
+              }
+              throw Error("No saved articles");
+            })
+            .catch((err) => console.log(err));
+        }
+        throw Error("something went wrong");
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const handleDeleteArticle = (article) => {
+    const inSaved = () => {
+      return savedArticles.filter((el) => checkIfSaved(el, article))[0];
+    };
+    const savedArticle = inSaved();
+    return mainApi
+      .deleteArticle(token, savedArticle._id)
+      .then((res) => {
+        if (!res.message) {
+          return getSavedArticlesArr(token)
+            .then((gotArticles) => {
+              if (gotArticles) {
+                setSavedArticlesArr(gotArticles);
+                return;
+              }
+              throw new Error("No more saved articles");
+            })
+            .catch((err) => console.log(err));
+        }
+        const error = new Error("Something went wrong");
+        error.name = res.name;
+        error.message = res.message;
+        throw error;
+      })
+      .catch((err) => console.log(err));
+  };
+
+  // News-api requests and found articles handling
+  const getFoundArticlesArr = (keyWord) => {
+    return getFoundArticles(keyWord)
+      .then((gotArticles) => {
+        if (gotArticles.articles) {
+          return gotArticles.articles.map((el) => {
+            const article = {};
+            article.keyword = keyWord;
+            article.date = el.publishedAt;
+            article.title = el.title;
+            article.link = el.url;
+            article.image = el.urlToImage;
+            article.text = el.description;
+            article.source = el.source.name;
+            return article;
+          });
+        }
+        throw Error("Smth went wrong");
+      })
+
+      .catch((err) => console.log(err));
+  };
+
+  const handleSubmitSearch = () => {
+    setStartSearch({ started: true });
+    return getFoundArticlesArr(validate.values["search"])
+      .then((resultArray) => {
+        if (resultArray) {
+          return resultArray;
+        }
+        throw Error("Something went wrong");
+      })
+      .then((articlesGot) => {
+        if (articlesGot) {
+          setFoundArticlesArr([...articlesGot]);
+          localStorage.setItem("foundArticles", JSON.stringify(articlesGot));
+          return;
+        }
+        throw Error("Something went wrong");
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {
+        setStartSearch({ finished: true });
+        return;
+      });
   };
 
   const props = {
     location,
-    loggedIn,
-    currentUser,
-    signupSuccess,
-    setSignupSuccess,
-    handleSubmitLogin,
     ...validate,
-    signIn,
-    logOut,
-    articles,
-    arr,
-    savedArticles,
-    setSavedArticles,
-    setArticles,
-    setStartSearch,
-    closePopup,
-    handleClosePopup,
+    loggedIn,
     popup,
     setPopup,
-    navigate,
+    handleClosePopup,
     handleNavigate,
-    submitFormError,
-    setSubmitFormError,
-    handleSaveArticle,
+    handleSubmitSearch,
+    foundArticles,
+    savedArticles,
+    areSavedArticles,
+    handleAddArticle,
     handleDeleteArticle,
-    articlesToSave,
-    setArticlesToSave,
-    handleSaveArray,
+    setSavedArticles,
+    signIn,
+    handleSubmitLogin,
+    handleLogOut,
+    REACT_APP_HOME_PATH,
+    REACT_APP_SAVED_NEWS_PATH,
+    navigate,
   };
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      <DocPropsContext.Provider value={props}>
-        <Routes>
-          <Route path={homePath} element={<Header {...props} />} />
-          <Route
-            path={savedNewsPath}
-            element={
-              <ProtectedRout loggedIn={loggedIn}>
-                <SavedNewsHeader {...props} replace />
-              </ProtectedRout>
-            }
-          />
-          <Route path={defaultPath} element={<Navigate to={homePath} />} />
-        </Routes>
-        <Main>
-          {location.pathname !== homePath ? null : startSearch.started &&
-            articles.length < 1 ? (
-            <Preloader />
-          ) : startSearch.finished && articles.length < 1 ? (
-            <NotFound />
-          ) : null}
+      <Routes>
+        <Route path={REACT_APP_HOME_PATH} element={<Header {...props} />} />
+        <Route
+          path={REACT_APP_SAVED_NEWS_PATH}
+          element={
+            <ProtectedRout loggedIn={loggedIn}>
+              <SavedNewsHeader {...props} replace />
+            </ProtectedRout>
+          }
+        />
+        <Route
+          path={REACT_APP_DEFAULT_PATH}
+          element={<Navigate to={REACT_APP_HOME_PATH} />}
+        />
+      </Routes>
+      <Main>
+        {location.pathname !==
+        REACT_APP_HOME_PATH ? null : startSearch.started &&
+          foundArticles.length < 1 ? (
+          <Preloader />
+        ) : startSearch.finished && foundArticles.length < 1 ? (
+          <NotFound />
+        ) : null}
 
-          {location.pathname === savedNewsPath ||
-          (articles.length && articles.length > 0) ? (
-            <Cards {...props} />
-          ) : null}
-          {location.pathname === homePath ? <About /> : null}
-        </Main>
-        <Footer {...props} />
-        <PopupWithForm {...props} />
-      </DocPropsContext.Provider>
+        {location.pathname === REACT_APP_SAVED_NEWS_PATH ||
+        (foundArticles.length && foundArticles.length > 0) ? (
+          <Cards {...props} />
+        ) : null}
+        {location.pathname === REACT_APP_HOME_PATH ? <About /> : null}
+      </Main>
+      <Footer {...props} />
+      <PopupWithForm {...props} />
     </CurrentUserContext.Provider>
   );
-}
+};
 
 export default App;

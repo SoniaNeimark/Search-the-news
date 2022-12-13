@@ -21,3 +21,11 @@ export const checkArray = (arr, callback) => {
     return false
   }
 };
+
+export const checkIfNotNull = (value, result) => {
+  return value !== null ? value : result;
+};
+
+export const checkIfSaved = (el, article) => {
+  return el.link === article.link;
+};

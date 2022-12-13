@@ -1,82 +1,74 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { convertDate } from "../../utils/constants/constants";
 function Card(props) {
   const savedArray = props.savedArticles;
-  const articlesToSave = props.articlesToSave;
-  const articlesToRemove = props.articlesToRemove;
-  const setArticlesToSave = props.setArticlesToSave;
-  const setArticlesToRemove = props.setArticlesToRemove;
+  const loggedIn = props.loggedIn;
+  const cardDate = convertDate(props.article.date);
+
   const checkIfSaved = (item) => {
     return item.link === props.article.link;
   };
   const isSaved = () => {
-    if (Array.isArray(savedArray) && savedArray.length === 1) {
+    if (!Array.isArray(savedArray) || savedArray.length === 0) {
+      return false;
+    } else if (Array.isArray(savedArray) && savedArray.length === 1) {
       return checkIfSaved(savedArray[0]);
-    } else if (Array.isArray(savedArray)) {
+    } else {
       return savedArray.some(checkIfSaved);
     }
-    return false;
   };
   const savedState = isSaved();
 
   const [saved, setSaved] = useState(false);
-
-  /*const handleCardClick = () => {
-    if (props.location.pathname === "/") {
-      if (!saved) {
-        setArticlesToSave(
-          Array.isArray(articlesToSave) && articlesToSave.length > 0
-            ? [...articlesToSave, props.article]
-            : [props.article]
-        );
-        setSaved(true);
-        return;
-      }
-      setArticlesToRemove(
-        Array.isArray(articlesToRemove) && articlesToRemove.length > 0
-          ? [...articlesToRemove, props.article]
-          : [props.article]
-      );
-    }
-    return props.handleDeleteArticle(props.article);
-  };*/
-
   useEffect(() => {
-    const setSavedState = () => {
+    (() => {
       if (savedState && savedState !== null) {
         return setSaved(true);
       }
       return setSaved(false);
-    };
-    setSavedState();
-  }, [savedState, savedArray]);
+    })();
+  }, [savedState, savedArray, loggedIn]);
+
+  const handleButtonclick = () => {
+    if (props.location.pathname !== props.REACT_APP_SAVED_NEWS_PATH) {
+      if (!loggedIn) {
+        props.signIn();
+      } else {
+        if (!saved) {
+          props.handleAddArticle(props.article);
+        } else {
+          props.handleDeleteArticle(props.article);
+        }
+      }
+    } else {
+      props.handleDeleteArticle(props.article);
+    }
+  };
+
   return (
     <li className="card" id={props.id}>
+      <a
+            className="card__link"
+            href={props.article.link}
+            target="_blank"
+            rel="noreferrer noopener"
+          >
       <img
         className="card__image"
         src={props.article.image}
         alt={props.article.title}
       />
-      {props.location.pathname === props.savedNewsPath ? (
+      {props.location.pathname === props.REACT_APP_SAVED_NEWS_PATH ? (
         <button className="card__keyword" disabled type="button">
           {props.article.keyword}
         </button>
       ) : null}
-      <button
-        className={`card__label${
-          props.location.pathname === props.savedNewsPath ? " card__label_trashbin" : ""
-        }${saved ? " card__label_marked" : ""}`}
-        disabled={!props.loggedIn}
-        onClick={() =>
-          props.location.pathname === props.savedNewsPath
-            ? props.deleteCard
-            : props.handleAddCard
-        }
-      ></button>
-      {(props.loggedIn && props.location.pathname === props.savedNewsPath) ||
-      !props.loggedIn ? (
+      
+      {(loggedIn && props.location.pathname === props.REACT_APP_SAVED_NEWS_PATH) ||
+      !loggedIn ? (
         <button className="card__alert" disabled type="button">
           {`${
-            props.location.pathname === props.savedNewsPath
+            props.location.pathname === props.REACT_APP_SAVED_NEWS_PATH
               ? "Remove from saved"
               : "Sign in to save articles"
           }`}
@@ -85,12 +77,21 @@ function Card(props) {
 
       <article className="card__article">
         <div className="card__text">
-          <p className="card__date">{`${saved}`}</p>
+          <p className="card__date">{cardDate}</p>
           <h2 className="card__title">{props.article.title}</h2>
           <p className="card__paragraph">{props.article.text}</p>
         </div>
         <p className="card__source">{props.article.source}</p>
       </article>
+      </a>
+      <button
+        className={`card__label${
+          props.location.pathname === props.REACT_APP_SAVED_NEWS_PATH
+            ? " card__label_trashbin"
+            : ""
+        }${saved && loggedIn ? " card__label_marked" : ""}`}
+        onClick={handleButtonclick}
+      ></button>
     </li>
   );
 }

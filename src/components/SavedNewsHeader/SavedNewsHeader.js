@@ -6,7 +6,7 @@ import Navigation from "../Navigation/Navigation";
 function SavedNewsHeader(props) {
   const user = useContext(CurrentUserContext);
   const getKeys = () => {
-    if (props.savedArticles.length > 0) {
+    if (Array.isArray(props.savedArticles) && props.savedArticles.length && props.savedArticles.length > 0) {
       return props.savedArticles.map((article) => article["keyword"]);
     }
     return false;

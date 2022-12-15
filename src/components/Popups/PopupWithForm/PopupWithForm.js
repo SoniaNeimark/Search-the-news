@@ -6,7 +6,7 @@ const PopupWithForm = (props) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     props.popup.signupPopup
-      ? props.setSignupSuccess(true)
+      ? props.handleSubmitRegister()
       : props.handleSubmitLogin();
   };
   const handleSuccess = () => {
@@ -69,7 +69,7 @@ const PopupWithForm = (props) => {
                   values={values}
                   errors={errors}
                   title="Username"
-                  name="username"
+                  name="name"
                   type="text"
                   placeholder="Username"
                   minLength={2}

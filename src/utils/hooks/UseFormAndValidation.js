@@ -3,7 +3,6 @@ import { useState, useCallback } from "react";
 export function useFormAndValidation() {
   const [values, setValues] = useState({});
   const [errors, setErrors] = useState({});
-  const [submitFormError, setSubmitFormError] = useState("");
   const [isValid, setIsValid] = useState(false);
 
   const handleChange = (e) => {
@@ -14,18 +13,12 @@ export function useFormAndValidation() {
   };
 
   const resetForm = useCallback(
-    (
-      newValues = {},
-      newErrors = {},
-      newIsValid = false,
-      newSubmitFormError = ""
-    ) => {
+    (newValues = {}, newErrors = {}, newIsValid = false) => {
       setValues(newValues);
       setErrors(newErrors);
       setIsValid(newIsValid);
-      setSubmitFormError(newSubmitFormError);
     },
-    [setValues, setErrors, setIsValid, setSubmitFormError]
+    [setValues, setErrors, setIsValid]
   );
 
   return {
@@ -37,7 +30,5 @@ export function useFormAndValidation() {
     setValues,
     setIsValid,
     setErrors,
-    submitFormError,
-    setSubmitFormError,
   };
 }

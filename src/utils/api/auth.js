@@ -7,6 +7,21 @@ export const baseUrl =
     ? process.env.REACT_APP_BASE_URL_DEV
     : process.env.REACT_APP_BASE_URL_PRO;
 
+export const register = ({ email, password, name }) => {
+  return fetch(`${baseUrl}/signup`, {
+    method: "POST",
+    headers: { ...headers },
+    body: JSON.stringify({ email: email, password: password, name: name }),
+  })
+    .then((res) => checkResponse(res))
+    .then((data) => {
+      if (data._id) {
+        return data;
+      }
+      throw new Error("Something went wrong");
+    });
+};
+
 export const authorize = ({ email, password }) => {
   return fetch(`${baseUrl}/signin`, {
     method: "POST",
@@ -30,6 +45,9 @@ export const getUser = (token) => {
   })
     .then((res) => checkResponse(res))
     .then((data) => {
-      return data;
+      if (data.email) {
+        return data;
+      }
+      throw new Error("Something went wrong");
     });
 };

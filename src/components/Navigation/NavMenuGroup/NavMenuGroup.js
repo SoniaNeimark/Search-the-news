@@ -33,7 +33,7 @@ function NavMenuGroup(props) {
               }`
             : " menu__button_image_none"
         }`}
-        onClick={!props.loggedIn ? props.signIn : props.handleLogOut}
+        onClick={() => !props.loggedIn ? props.signIn() : props.handleLogOut()}
       >
         {props.loggedIn ? user.name : "Sign in"}
       </button>

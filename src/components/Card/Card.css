@@ -14,6 +14,10 @@
   margin-bottom: 15px;
 }
 .card__link {
+  width: 100%;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
   cursor: pointer;
   text-decoration: none;
   color: rgba(26, 27, 34, 1);
@@ -117,7 +121,6 @@
   height: 242px;
   display: flex;
   flex-flow: column;
-  align-items: center;
   justify-content: space-between;
 }
 

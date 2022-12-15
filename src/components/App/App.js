@@ -22,9 +22,8 @@ import NotFound from "../NotFound/NotFound";
 import Cards from "../Cards/Cards";
 import About from "../About/About";
 import Footer from "../Footer/Footer";
-
 const App = () => {
-  //localStorage.clear()
+  //localStorage.clear();
   //  variables
   const {
     REACT_APP_HOME_PATH,
@@ -35,31 +34,26 @@ const App = () => {
   const validate = useFormAndValidation();
   const navigate = useNavigate();
 
-  const isTokenIssued = checkIfNotNull(localStorage.getItem("token"), "");
-  const isLoggedIn = checkIfNotNull(localStorage.getItem("loggedIn"), false);
-  const isCurrentUser = checkIfNotNull(
-    JSON.parse(localStorage.getItem("currentUser")),
-    {}
-  );
-  const areSavedArticles = checkIfNotNull(
-    JSON.parse(localStorage.getItem("savedArticles")),
-    []
-  );
-
-  const areFoundArticles = checkIfNotNull(
-    JSON.parse(localStorage.getItem("foundArticles")),
-    []
-  );
-
-  const [token, setToken] = useState(isTokenIssued);
-  const [loggedIn, setLoggedIn] = useState(isLoggedIn);
-  const [currentUser, setCurrentUser] = useState(isCurrentUser);
-
-  const [savedArticles, setSavedArticles] = useState(areSavedArticles);
-
-  const [foundArticles, setFoundArticles] = useState(areFoundArticles);
+  const [token, setToken] = useState(localStorage.getItem("token"));
+  const [loggedIn, setLoggedIn] = useState(localStorage.getItem("loggedIn"));
+  const [currentUser, setCurrentUser] = useState(null);
+  const [signupSuccess, setSignupSuccess] = useState(false);
+  const [savedArticles, setSavedArticles] = useState(null);
+  const [foundArticles, setFoundArticles] = useState(null);
   const [popup, setPopup] = useState({});
   const [startSearch, setStartSearch] = useState({});
+  const [submitFormError, setSubmitFormError] = useState("");
+  console.log(
+    token +
+      ", " +
+      loggedIn +
+      ", " +
+      checkIfNotNull(currentUser, "no user") +
+      ", " +
+      checkIfNotNull(savedArticles, "no articles saved") +
+      ", " +
+      checkIfNotNull(foundArticles, "no articles found")
+  );
 
   // methods
   const signIn = () => setPopup({ PopupWithFormIsOpen: true, clicked: false });
@@ -87,6 +81,8 @@ const App = () => {
       localStorage.setItem("currentUser", JSON.stringify(user));
       return;
     }
+    setLoggedIn(false);
+    setCurrentUser(null);
     localStorage.clear();
     return;
   };
@@ -111,80 +107,6 @@ const App = () => {
     return;
   };
 
-  //  hooks
-  useEffect(() => {
-    if (token) {
-      return setToken(token);
-    } else {
-      setToken("");
-      setLoggedIn(false);
-      localStorage.clear();
-      return;
-    }
-  }, [token]);
-
-  useEffect(() => {
-    if (loggedIn) {
-      setLoggedIn(true);
-      return;
-    } else {
-      setLoggedIn(false);
-      localStorage.clear();
-      return;
-    }
-  }, [loggedIn]);
-
-  useEffect(() => {
-    function setUserState(data) {
-      if (data) {
-        return setCurrentUser(data);
-      } else {
-        setCurrentUser({});
-        localStorage.clear();
-        return;
-      }
-    }
-    setUserState(currentUser);
-  }, [currentUser]);
-
-  useEffect(() => {
-    function setFoundArticlesState(data) {
-      if (data) {
-        setFoundArticles(data);
-        return;
-      } else {
-        setFoundArticles([]);
-        localStorage.setItem("foundArticles", []);
-        return;
-      }
-    }
-    setFoundArticlesState(foundArticles);
-  }, [foundArticles, loggedIn]);
-
-  useEffect(() => {
-    function setSavedArticlesState(data) {
-      if (data) {
-        setSavedArticles(data);
-        return;
-      } else {
-        setSavedArticles([]);
-        localStorage.setItem("savedArticles", []);
-        return;
-      }
-    }
-    setSavedArticlesState(savedArticles);
-  }, [savedArticles]);
-
-  useEffect(() => {
-    const closeByEscape = (evt) => {
-      if (evt.key === "Escape") {
-        closePopup();
-      }
-    };
-    document.addEventListener("keydown", closeByEscape);
-    return () => document.removeEventListener("keydown", closeByEscape);
-  }, []);
-
   //  api-requests
   ////  authorization api-requests and login handling
   ////// token-check
@@ -199,10 +121,11 @@ const App = () => {
           }
           return false;
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          console.log(err);
+          return false;
+        });
     }
-    console.log(localStorage);
-    console.log("oops again");
     return false;
   };
 
@@ -210,8 +133,8 @@ const App = () => {
   const handleLogIn = (user) => {
     if (user) {
       setUser(user);
-      const tokenIs = localStorage.getItem("token");
-      return getSavedArticlesArr(tokenIs)
+      //const tokenIs = localStorage.getItem("token");
+      return getSavedArticlesArr(token)
         .then((articles) => {
           if (articles) {
             setSavedArticlesArr(articles);
@@ -230,9 +153,24 @@ const App = () => {
   const handleLogOut = () => {
     localStorage.clear();
     setLoggedIn(false);
+    setCurrentUser({});
     setFoundArticles([]);
     setStartSearch({});
     handleClosePopup();
+    return;
+  };
+
+  const handleSubmitRegister = () => {
+    auth
+      .register(validate.values)
+      .then((data) => {
+        if (data._id) {
+          setSignupSuccess(true);
+          return;
+        }
+        throw Error();
+      })
+      .catch((err) => validate.setSubmitFormError(err.message));
   };
 
   const handleSubmitLogin = () => {
@@ -240,6 +178,7 @@ const App = () => {
       .authorize(validate.values)
       .then((data) => {
         if (data.token) {
+          setToken(data.token);
           localStorage.setItem("token", data.token);
           return data.token;
         }
@@ -257,9 +196,10 @@ const App = () => {
           return;
         }
         localStorage.clear();
+        handleLogOut();
         return;
       })
-      .catch((err) => validate.setSubmitFormError(err));
+      .catch((err) => setSubmitFormError(err.message));
   };
 
   ////  Main-api requests and saved articles handling
@@ -369,6 +309,54 @@ const App = () => {
       });
   };
 
+  //  hooks
+  useEffect(() => {
+    const tokenIs = checkIfNotNull(localStorage.getItem("token"), "");
+    return setToken(tokenIs);
+  }, []);
+
+  useEffect(() => {
+    const loggedInIs = checkIfNotNull(localStorage.getItem("loggedIn"), false);
+    setLoggedIn(loggedInIs);
+  }, []);
+
+  useEffect(() => {
+    const userIs = checkIfNotNull(localStorage.getItem("currentUser"), false)
+      ? JSON.parse(localStorage.getItem("currentUser"))
+      : {};
+    setCurrentUser(userIs);
+  }, []);
+
+  useEffect(() => {
+    const foundArticlesAre = checkIfNotNull(
+      localStorage.getItem("foundArticles"),
+      false
+    )
+      ? JSON.parse(localStorage.getItem("foundArticles"))
+      : [];
+    setFoundArticles(foundArticlesAre);
+  }, []);
+
+  useEffect(() => {
+    const savedArticlesAre = checkIfNotNull(
+      localStorage.getItem("savedArticles"),
+      false
+    )
+      ? JSON.parse(localStorage.getItem("savedArticles"))
+      : [];
+    setSavedArticles(savedArticlesAre);
+  }, []);
+
+  useEffect(() => {
+    const closeByEscape = (evt) => {
+      if (evt.key === "Escape") {
+        closePopup();
+      }
+    };
+    document.addEventListener("keydown", closeByEscape);
+    return () => document.removeEventListener("keydown", closeByEscape);
+  }, []);
+
   const props = {
     location,
     ...validate,
@@ -376,20 +364,24 @@ const App = () => {
     popup,
     setPopup,
     handleClosePopup,
+    signupSuccess,
+    setSignupSuccess,
     handleNavigate,
     handleSubmitSearch,
     foundArticles,
     savedArticles,
-    areSavedArticles,
     handleAddArticle,
     handleDeleteArticle,
     setSavedArticles,
     signIn,
     handleSubmitLogin,
+    handleSubmitRegister,
     handleLogOut,
     REACT_APP_HOME_PATH,
     REACT_APP_SAVED_NEWS_PATH,
     navigate,
+    submitFormError,
+    setSubmitFormError,
   };
 
   return (
@@ -412,14 +404,14 @@ const App = () => {
       <Main>
         {location.pathname !==
         REACT_APP_HOME_PATH ? null : startSearch.started &&
-          foundArticles.length < 1 ? (
-          <Preloader />
-        ) : startSearch.finished && foundArticles.length < 1 ? (
-          <NotFound />
+          !Array.isArray(foundArticles) ? (
+          <Preloader preloader={false} />
+        ) : startSearch.finished && !Array.isArray(foundArticles) ? (
+          <NotFound searchError={false} />
         ) : null}
 
         {location.pathname === REACT_APP_SAVED_NEWS_PATH ||
-        (foundArticles.length && foundArticles.length > 0) ? (
+        Array.isArray(foundArticles) ? (
           <Cards {...props} />
         ) : null}
         {location.pathname === REACT_APP_HOME_PATH ? <About /> : null}

@@ -11,13 +11,13 @@ function Cards(props) {
     signIn: props.signIn,
     REACT_APP_SAVED_NEWS_PATH: props.REACT_APP_SAVED_NEWS_PATH,
   };
-  const len = props.foundArticles.length;
+  const len = props.foundArticles && Array.isArray(props.foundArticles) ? props.foundArticles.length : false;
   const [arrIndexes, setArrIndexes] = useState([0]);
 
   let arr = [];
 
   const renderCards = (arrToRender, prefix) => {
-    if (arrToRender && arrToRender !== null && !Array.isArray(arrToRender)) {
+    if (arrToRender && arrToRender !== null && Array.isArray(arrToRender) && arrToRender.length === 1) {
       return (
         <Card
           article={arrToRender}
@@ -26,7 +26,7 @@ function Cards(props) {
           {...cardProps}
         />
       );
-    } else if (Array.isArray(arrToRender)) {
+    } else if (Array.isArray(arrToRender) && arrToRender.length > 1) {
       return arrToRender.map((item) => {
         const key = item._id
           ? item._id
@@ -42,7 +42,7 @@ function Cards(props) {
   const sliceArticlesArr = () => {
     for (
       let j = 0, i = 0, num = 3;
-      j < len && i < len / 3;
+      len && j < len && i < len / 3;
       j = j + 3, num = num + 3
     ) {
       arr[i] =

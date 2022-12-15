@@ -6,7 +6,7 @@ export const checkResponse = (res) => {
     const error = new Error("authorizationError");
     error.name = "AuthorizationError";
     error.message = obj.message;
-    return Promise.reject(error.message);
+    return Promise.reject({ message: error.message });
   });
 };
 
@@ -18,7 +18,7 @@ export const checkArray = (arr, callback) => {
   } else if (Array.isArray(arr) && arr.length && arr.length > 1) {
     return arr.some(callback);
   } else {
-    return false
+    return false;
   }
 };
 

@@ -15,7 +15,7 @@ export const register = ({ email, password, name }) => {
   })
     .then((res) => checkResponse(res))
     .then((data) => {
-      if (data._id) {
+      if (data.email) {
         return data;
       }
       throw new Error("Something went wrong");

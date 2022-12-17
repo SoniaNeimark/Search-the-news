@@ -2,26 +2,27 @@ import React, { useContext } from "react";
 import { CurrentUserContext } from "../../utils/cotexts/CurrentUserContext";
 import DropOutPopup from "../Popups/DropOutPopup/DropOutPopup";
 import Navigation from "../Navigation/Navigation";
+import { countElements } from "../../utils/callbacks/callbacks";
 
 function SavedNewsHeader(props) {
   const user = useContext(CurrentUserContext);
   const getKeys = () => {
-    if (Array.isArray(props.savedArticles) && props.savedArticles.length && props.savedArticles.length > 0) {
+    if (
+      Array.isArray(props.savedArticles) &&
+      props.savedArticles.length &&
+      props.savedArticles.length > 0
+    ) {
       return props.savedArticles.map((article) => article["keyword"]);
     }
-    return false;
+    return [];
   };
 
   const allKeys = getKeys();
 
-  const uniqueKeys = !allKeys
-    ? ""
-    : Array.isArray(allKeys)
-    ? [...new Set(allKeys)]
-    : allKeys;
+  const uniqueKeys = countElements(allKeys);
 
   const keywords = allKeys
-    ? allKeys[0] +
+    ? uniqueKeys[0] +
       ` ${uniqueKeys.length > 1 ? ", " + uniqueKeys[1] : ""}` +
       ` ${uniqueKeys.length > 2 ? ` and ${uniqueKeys.length - 2} other` : ""}`
     : "";

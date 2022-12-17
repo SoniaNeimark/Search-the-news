@@ -22,8 +22,8 @@ import NotFound from "../NotFound/NotFound";
 import Cards from "../Cards/Cards";
 import About from "../About/About";
 import Footer from "../Footer/Footer";
+
 const App = () => {
-  //localStorage.clear();
   //  variables
   const {
     REACT_APP_HOME_PATH,
@@ -31,29 +31,22 @@ const App = () => {
     REACT_APP_DEFAULT_PATH,
   } = process.env;
   const location = useLocation();
-  const validate = useFormAndValidation();
+
   const navigate = useNavigate();
 
-  const [token, setToken] = useState(localStorage.getItem("token"));
-  const [loggedIn, setLoggedIn] = useState(localStorage.getItem("loggedIn"));
-  const [currentUser, setCurrentUser] = useState(null);
+  const [token, setToken] = useState("");
+  const [loggedIn, setLoggedIn] = useState(localStorage.getItem("loggedIn") || false);
+  const [currentUser, setCurrentUser] = useState({});
   const [signupSuccess, setSignupSuccess] = useState(false);
-  const [savedArticles, setSavedArticles] = useState(null);
-  const [foundArticles, setFoundArticles] = useState(null);
+  const [savedArticles, setSavedArticles] = useState([]);
+  const [foundArticles, setFoundArticles] = useState([]);
   const [popup, setPopup] = useState({});
   const [startSearch, setStartSearch] = useState({});
   const [submitFormError, setSubmitFormError] = useState("");
-  console.log(
-    token +
-      ", " +
-      loggedIn +
-      ", " +
-      checkIfNotNull(currentUser, "no user") +
-      ", " +
-      checkIfNotNull(savedArticles, "no articles saved") +
-      ", " +
-      checkIfNotNull(foundArticles, "no articles found")
+  const [searchKeyWord, setSearchKeyWord] = useState(
+    localStorage.getItem("searchKeyWord") || ""
   );
+  const validate = useFormAndValidation({ search: searchKeyWord });
 
   // methods
   const signIn = () => setPopup({ PopupWithFormIsOpen: true, clicked: false });
@@ -109,7 +102,6 @@ const App = () => {
 
   //  api-requests
   ////  authorization api-requests and login handling
-  ////// token-check
   const checkToken = (tokenIs) => {
     if (tokenIs) {
       return auth
@@ -129,34 +121,8 @@ const App = () => {
     return false;
   };
 
-  ////// login handling
-  const handleLogIn = (user) => {
-    if (user) {
-      setUser(user);
-      //const tokenIs = localStorage.getItem("token");
-      return getSavedArticlesArr(token)
-        .then((articles) => {
-          if (articles) {
-            setSavedArticlesArr(articles);
-            localStorage.setItem("savedArticles", JSON.stringify(articles));
-            return;
-          }
-          setSavedArticles([]);
-          localStorage.removeItem("savedArticles");
-          return;
-        })
-        .catch((err) => console.log(err))
-        .finally(() => handleClosePopup());
-    }
-  };
-
   const handleLogOut = () => {
     localStorage.clear();
-    setLoggedIn(false);
-    setCurrentUser({});
-    setFoundArticles([]);
-    setStartSearch({});
-    handleClosePopup();
     return;
   };
 
@@ -164,13 +130,12 @@ const App = () => {
     auth
       .register(validate.values)
       .then((data) => {
-        if (data._id) {
+        if (data) {
           setSignupSuccess(true);
           return;
         }
-        throw Error();
       })
-      .catch((err) => validate.setSubmitFormError(err.message));
+      .catch((err) => setSubmitFormError(err.message));
   };
 
   const handleSubmitLogin = () => {
@@ -186,20 +151,38 @@ const App = () => {
       })
       .then((tokenGot) => {
         if (tokenGot) {
-          return checkToken(tokenGot);
+          return checkToken(tokenGot).then((data) => {
+            if (data) {
+              setUser(data);
+              return getSavedArticlesArr(tokenGot)
+                .then((articles) => {
+                  if (articles) {
+                    setSavedArticlesArr(articles);
+                    localStorage.setItem(
+                      "savedArticles",
+                      JSON.stringify(articles)
+                    );
+                    return;
+                  }
+                  setSavedArticles([]);
+                  localStorage.removeItem("savedArticles");
+                  return;
+                })
+                .catch((err) => console.log(err))
+                .finally(() => handleClosePopup());
+            }
+            localStorage.clear();
+            handleLogOut();
+            return;
+          });
         }
         return false;
       })
-      .then((data) => {
-        if (data) {
-          handleLogIn(data);
-          return;
-        }
-        localStorage.clear();
-        handleLogOut();
-        return;
-      })
-      .catch((err) => setSubmitFormError(err.message));
+
+      .catch((err) => {
+        console.log(err);
+        setSubmitFormError(err.message);
+      });
   };
 
   ////  Main-api requests and saved articles handling
@@ -250,7 +233,8 @@ const App = () => {
                 setSavedArticlesArr(gotArticles);
                 return;
               }
-              throw new Error("No more saved articles");
+              setFoundArticlesArr([]);
+              localStorage.removeItem("foundArticles");
             })
             .catch((err) => console.log(err));
         }
@@ -279,14 +263,15 @@ const App = () => {
             return article;
           });
         }
-        throw Error("Smth went wrong");
+        throw Error("Smthing went wrong");
       })
 
       .catch((err) => console.log(err));
   };
 
   const handleSubmitSearch = () => {
-    setStartSearch({ started: true });
+    setStartSearch({ started: true, finished: false });
+    setFoundArticles([]);
     return getFoundArticlesArr(validate.values["search"])
       .then((resultArray) => {
         if (resultArray) {
@@ -298,13 +283,14 @@ const App = () => {
         if (articlesGot) {
           setFoundArticlesArr([...articlesGot]);
           localStorage.setItem("foundArticles", JSON.stringify(articlesGot));
+          localStorage.setItem("searchKeyWord", validate.values["search"]);
           return;
         }
         throw Error("Something went wrong");
       })
       .catch((err) => console.log(err))
       .finally(() => {
-        setStartSearch({ finished: true });
+        setStartSearch({ finished: true, started: false });
         return;
       });
   };
@@ -318,6 +304,14 @@ const App = () => {
   useEffect(() => {
     const loggedInIs = checkIfNotNull(localStorage.getItem("loggedIn"), false);
     setLoggedIn(loggedInIs);
+  }, [loggedIn, location.pathname]);
+
+  useEffect(() => {
+    const searchKeyWordIs = checkIfNotNull(
+      localStorage.getItem("searchKeyWord"),
+      ""
+    );
+    setSearchKeyWord(searchKeyWordIs);
   }, []);
 
   useEffect(() => {
@@ -372,16 +366,15 @@ const App = () => {
     savedArticles,
     handleAddArticle,
     handleDeleteArticle,
-    setSavedArticles,
     signIn,
     handleSubmitLogin,
     handleSubmitRegister,
     handleLogOut,
     REACT_APP_HOME_PATH,
     REACT_APP_SAVED_NEWS_PATH,
-    navigate,
     submitFormError,
     setSubmitFormError,
+    startSearch,
   };
 
   return (
@@ -391,7 +384,7 @@ const App = () => {
         <Route
           path={REACT_APP_SAVED_NEWS_PATH}
           element={
-            <ProtectedRout loggedIn={loggedIn}>
+            <ProtectedRout loggedIn={loggedIn} signIn={signIn} home={REACT_APP_HOME_PATH}>
               <SavedNewsHeader {...props} replace />
             </ProtectedRout>
           }
@@ -404,14 +397,14 @@ const App = () => {
       <Main>
         {location.pathname !==
         REACT_APP_HOME_PATH ? null : startSearch.started &&
-          !Array.isArray(foundArticles) ? (
+          foundArticles.length === 0 ? (
           <Preloader preloader={false} />
-        ) : startSearch.finished && !Array.isArray(foundArticles) ? (
+        ) : startSearch.finished && foundArticles.length === 0 ? (
           <NotFound searchError={false} />
         ) : null}
 
         {location.pathname === REACT_APP_SAVED_NEWS_PATH ||
-        Array.isArray(foundArticles) ? (
+        foundArticles.length > 0 ? (
           <Cards {...props} />
         ) : null}
         {location.pathname === REACT_APP_HOME_PATH ? <About /> : null}

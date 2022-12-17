@@ -1,7 +1,8 @@
 import React, { useContext } from "react";
+import { Link } from "react-router-dom";
 import { CurrentUserContext } from "../../../utils/cotexts/CurrentUserContext";
 function NavMenuGroup(props) {
-  const user = useContext(CurrentUserContext)
+  const user = useContext(CurrentUserContext);
   const handleNavigateToSaved = () => {
     props.handleNavigate(props.REACT_APP_SAVED_NEWS_PATH);
   };
@@ -33,9 +34,21 @@ function NavMenuGroup(props) {
               }`
             : " menu__button_image_none"
         }`}
-        onClick={() => !props.loggedIn ? props.signIn() : props.handleLogOut()}
+        onClick={() =>
+          !props.loggedIn ? props.signIn() : props.handleLogOut()
+        }
       >
-        {props.loggedIn ? user.name : "Sign in"}
+        {props.loggedIn ? (
+          <Link
+            className="menu__link"
+            reloadDocument
+            to={props.REACT_APP_HOME_PATH}
+          >
+            {user.name}
+          </Link>
+        ) : (
+          "Sign in"
+        )}
       </button>
     </div>
   );

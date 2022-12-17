@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Card from "../Card/Card";
 
 function Cards(props) {
@@ -11,22 +11,26 @@ function Cards(props) {
     signIn: props.signIn,
     REACT_APP_SAVED_NEWS_PATH: props.REACT_APP_SAVED_NEWS_PATH,
   };
-  const len = props.foundArticles && Array.isArray(props.foundArticles) ? props.foundArticles.length : false;
+  const len =
+    props.foundArticles && Array.isArray(props.foundArticles)
+      ? props.foundArticles.length
+      : false;
   const [arrIndexes, setArrIndexes] = useState([0]);
+  useEffect(() => {
+    if (props.startSearch.started) {
+      setArrIndexes([0]);
+    }
+  }, [props.startSearch]);
 
   let arr = [];
 
   const renderCards = (arrToRender, prefix) => {
-    if (arrToRender && arrToRender !== null && Array.isArray(arrToRender) && arrToRender.length === 1) {
-      return (
-        <Card
-          article={arrToRender}
-          handleAddArticle={cardProps.handleAddArticle}
-          signIn={cardProps.signIn}
-          {...cardProps}
-        />
-      );
-    } else if (Array.isArray(arrToRender) && arrToRender.length > 1) {
+    if (
+      arrToRender &&
+      arrToRender !== null &&
+      Array.isArray(arrToRender) &&
+      arrToRender.length > 0
+    ) {
       return arrToRender.map((item) => {
         const key = item._id
           ? item._id
@@ -57,7 +61,8 @@ function Cards(props) {
   return (
     <section className="cards">
       <h2 className="cards__title">
-        {cardProps.location.pathname !== cardProps.REACT_APP_SAVED_NEWS_PATH && "Search results"}
+        {cardProps.location.pathname !== cardProps.REACT_APP_SAVED_NEWS_PATH &&
+          "Search results"}
       </h2>
       <ul className="cards__gallery">
         {cardProps.location.pathname === cardProps.REACT_APP_SAVED_NEWS_PATH
@@ -71,7 +76,8 @@ function Cards(props) {
       {!arr.length ||
       arr.length < 1 ||
       arrIndexes.length === arr.length ||
-      cardProps.location.pathname === cardProps.REACT_APP_SAVED_NEWS_PATH ? null : (
+      cardProps.location.pathname ===
+        cardProps.REACT_APP_SAVED_NEWS_PATH ? null : (
         <button
           className="button cards__button"
           type="button"

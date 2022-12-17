@@ -54,6 +54,14 @@
   margin: 24px 0 24px 0;
 }
 
+.menu__link {
+  text-decoration: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
 .menu__button_image {
   width: 100%;
   background-image: url(../../../images/exit_white.svg);
@@ -111,6 +119,7 @@
   .menu__button {
     height: 40px;
     margin-left: 20px;
+    font-size: 16px;
   }
 
   .menu__button_image {
@@ -127,5 +136,8 @@
   .menu {
     font-size: 18px;
     padding-right: 104px;
+  }
+  .menu__button {
+    font-size: 18px;
   }
 }

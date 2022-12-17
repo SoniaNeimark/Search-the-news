@@ -1,22 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { convertDate } from "../../utils/constants/constants";
+import { checkIfSaved } from "../../utils/callbacks/callbacks";
 function Card(props) {
   const savedArray = props.savedArticles;
   const loggedIn = props.loggedIn;
   const cardDate = convertDate(props.article.date);
 
-  const checkIfSaved = (item) => {
-    return item.link === props.article.link;
-  };
   const isSaved = () => {
     if (!Array.isArray(savedArray) || savedArray.length === 0) {
       return false;
-    } else if (Array.isArray(savedArray) && savedArray.length === 1) {
-      return checkIfSaved(savedArray[0]);
     } else {
-      return savedArray.some(checkIfSaved);
+      return savedArray.some((el => checkIfSaved(el, props.article)));
     }
   };
+
   const savedState = isSaved();
 
   const [saved, setSaved] = useState(false);

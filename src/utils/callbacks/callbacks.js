@@ -10,22 +10,30 @@ export const checkResponse = (res) => {
   });
 };
 
-export const checkArray = (arr, callback) => {
-  if (!Array.isArray(arr) || (Array.isArray(arr) && arr.length === 0)) {
-    return false;
-  } else if (Array.isArray(arr) && arr.length && arr.length === 1) {
-    return callback(arr[0]);
-  } else if (Array.isArray(arr) && arr.length && arr.length > 1) {
-    return arr.some(callback);
-  } else {
-    return false;
-  }
-};
-
 export const checkIfNotNull = (value, result) => {
   return value !== null ? value : result;
 };
 
 export const checkIfSaved = (el, article) => {
   return el.link === article.link;
+};
+
+export const countElements = (arr) => {
+  const count = {};
+
+  arr.forEach((element) => {
+    count[element] = (count[element] || 0) + 1;
+  });
+
+  const swappedArr = Object.entries(count).map(([key, value]) => [value, key]);
+
+  const swappedObj = Object.fromEntries(swappedArr);
+
+  const sortedKeys = Object.keys(swappedObj).sort().reverse();
+
+  const sortedValues = sortedKeys.map((key) => {
+    return swappedObj[key];
+  });
+
+  return sortedValues;
 };

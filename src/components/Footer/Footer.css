@@ -12,7 +12,7 @@
   flex-flow: column;
   align-items: center;
   margin: auto;
-  justify-self: end;
+  justify-self: flex-end;
 }
 
 .footer__nav {

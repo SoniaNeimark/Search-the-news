@@ -1,6 +1,13 @@
+import { useRef, useEffect } from "react";
 import DropOutPopup from "../Popups/DropOutPopup/DropOutPopup";
 import Navigation from "../Navigation/Navigation";
 function Header(props) {
+  const ref = useRef("");
+  useEffect(() => {
+    ref.current.value = props.values["search"]
+      ? props.values["search"]
+      : "";
+  }, [props.values]);
   return (
     <header className="header">
       <Navigation {...props} white={false} />
@@ -13,18 +20,19 @@ function Header(props) {
           account.
         </p>
         <form
+          name="search"
           className="header__form"
           onSubmit={(e) => {
             e.preventDefault();
-            props.setStartSearch({ started: true });
-            props.setArticles(props.arr);
-            props.setStartSearch({ finished: true });
+            props.handleSubmitSearch();
           }}
+          onChange={(e) => props.handleChange(e)}
         >
           <input
+            ref={ref}
             name="search"
             className="header__input"
-            type={"text"}
+            type="text"
             placeholder="Enter topic"
             required
           ></input>

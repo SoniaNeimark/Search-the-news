@@ -1,36 +1,55 @@
+import React, { useContext } from "react";
+import { CurrentUserContext } from "../../utils/cotexts/CurrentUserContext";
 import DropOutPopup from "../Popups/DropOutPopup/DropOutPopup";
 import Navigation from "../Navigation/Navigation";
+import { countElements } from "../../utils/callbacks/callbacks";
 
 function SavedNewsHeader(props) {
-  const allKeys = props.savedArticles.map((article) => article["keyword"]);
-  const uniqueKeys = [...new Set(allKeys)];
-  const keywords =
-    allKeys[0] +
-    " " +
-    `${uniqueKeys.length > 1 ? ", " + uniqueKeys[1] : ""}` +
-    `${
-      uniqueKeys.length > 2
-        ? ` and ${uniqueKeys.length - 2} other`
-        : ""
-    }`;
+  const user = useContext(CurrentUserContext);
+  const getKeys = () => {
+    if (
+      Array.isArray(props.savedArticles) &&
+      props.savedArticles.length &&
+      props.savedArticles.length > 0
+    ) {
+      return props.savedArticles.map((article) => article["keyword"]);
+    }
+    return [];
+  };
+
+  const allKeys = getKeys();
+
+  const uniqueKeys = countElements(allKeys);
+
+  const keywords = allKeys
+    ? uniqueKeys[0] +
+      ` ${uniqueKeys.length > 1 ? ", " + uniqueKeys[1] : ""}` +
+      ` ${uniqueKeys.length > 2 ? ` and ${uniqueKeys.length - 2} other` : ""}`
+    : "";
+
   return (
     <header className="header header_theme_white">
       <Navigation {...props} white={true} />
       {props.popup.clicked ? <DropOutPopup {...props} menu={true} /> : null}
 
       <div className="header__main-group header__main-group_place_saved">
-        <p
-          className="header__subtitle header__subtitle_theme_white"
-        >
+        <p className="header__subtitle header__subtitle_theme_white">
           Saved articles
         </p>
         <h2 className="header__title header__title_theme_white">
-          {props.currentUser.name}, you have{" "}
-          {props.savedArticles ? props.savedArticles.length : 0} saved articles
+          {user.name}, you have{" "}
+          {!Array.isArray(props.savedArticles) || !props.savedArticles.length
+            ? "no saved articles"
+            : props.savedArticles.length > 1
+            ? props.savedArticles.length + " saved articles"
+            : "1 saved article"}
         </h2>
-        {props.savedArticles ? (
+        {props.savedArticles.length > 0 ? (
           <h3 className="paragraph paragraph_place_header">
-            By keywords: <b>{keywords}</b>
+            {Array.isArray(uniqueKeys) && uniqueKeys.length > 1
+              ? "By keywords: "
+              : "By keyword: "}
+            <b>{keywords}</b>
           </h3>
         ) : null}
       </div>

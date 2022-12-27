@@ -24,8 +24,8 @@ export const countElements = (arr) => {
   arr.forEach((element) => {
     count[element] = (count[element] || 0) + 1;
   });
-
-  const swappedArr = Object.entries(count).map(([key, value]) => [value + key, key]);
+  
+  const swappedArr = Object.entries(count).map(([key, value]) => [value, key]);
 
   const swappedObj = Object.fromEntries(swappedArr);
 

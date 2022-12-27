@@ -13,6 +13,15 @@
   position: relative;
   margin-bottom: 15px;
 }
+.card__link {
+  width: 100%;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  cursor: pointer;
+  text-decoration: none;
+  color: rgba(26, 27, 34, 1);
+}
 
 .card__image {
   width: 288px;
@@ -74,7 +83,8 @@
   position: absolute;
   top: 8px;
   right: 8px;
-  z-index: 1;
+  /*z-index: 3;*/
+  cursor: pointer;
 }
 
 .card__label:hover {
@@ -111,7 +121,6 @@
   height: 242px;
   display: flex;
   flex-flow: column;
-  align-items: center;
   justify-content: space-between;
 }
 
@@ -190,7 +199,7 @@
     margin-right: 8px;
   }
 
-  .card:nth-child(3) {
+  .card:nth-of-type(3n) {
     margin-right: 0;
   }
 

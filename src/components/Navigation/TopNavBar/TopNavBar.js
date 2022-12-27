@@ -1,8 +1,4 @@
 const TopNavBar = (props) => {
-  const handleNavigate = (path) => {
-    props.navigate(path);
-    props.closePopup();
-  };
   return (
     <nav
       className={`nav${props.white ? " nav_theme_white" : ""}${
@@ -11,7 +7,7 @@ const TopNavBar = (props) => {
       id="nav"
     >
     <div className={`nav__top${props.white ? " nav__top_theme_white" : ""} hover-opacity`}>
-      <h2 className="nav__logo" onClick={() => handleNavigate("/")}>
+      <h2 className="nav__logo" onClick={() => props.handleNavigate("/")}>
         NewsExplorer
       </h2>
       {props.children}

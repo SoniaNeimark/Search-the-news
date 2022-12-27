@@ -1,9 +1,11 @@
 .main {
   width: 100%;
+  /*min-height: 100%;*/
   display: flex;
   flex-flow: column;
   align-items: center;
-  margin: auto;
+  /*justify-content: space-between;*/
+  margin: 0;
 
   color: rgba(26, 27, 34, 1);
 }

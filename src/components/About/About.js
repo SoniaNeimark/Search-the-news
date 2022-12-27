@@ -14,7 +14,7 @@ function About() {
             target="_blank"
             rel="noreferrer noopener"
           ><b>Practicum</b>
-          </a> in Israel. To learn new things and to develop new skills is the best pleasure for me! I've now just started my way and feel very exited of what's waiting for me on the road. 
+          </a> in Israel. To learn new things and to develop new skills is the best pleasure for me! I've now just started my way and feel very excited of what's waiting for me on the road. 
         </p>
         <p className="paragraph">
           My experience with <a
@@ -23,7 +23,7 @@ function About() {
             target="_blank"
             rel="noreferrer noopener"
           ><b>Practicum</b>
-          </a> was really exciting! I got a really good start! 
+          </a> was unforgettable! I got a really good start! 
         </p>
       </div>
     </section>

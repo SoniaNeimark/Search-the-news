@@ -2,10 +2,7 @@ import { headers, setHeaders } from "../constants/constants";
 import { checkResponse } from "../callbacks/callbacks";
 
 const devMode = process.env.NODE_ENV;
-export const baseUrl =
-  devMode === "development"
-    ? process.env.REACT_APP_BASE_URL_DEV
-    : 'https://news-explorer-api-liard.vercel.app';
+export const baseUrl = 'https://news-explorer-api-avm7.vercel.app';
 
 export const register = ({ email, password, name }) => {
   return fetch(`${baseUrl}/signup`, {

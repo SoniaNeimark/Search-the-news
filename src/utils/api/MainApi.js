@@ -1,12 +1,10 @@
 import { headers, setHeaders } from "../constants/constants";
 import { checkResponse } from "../callbacks/callbacks";
+import { baseUrl } from "./auth";
 
 export const { REACT_APP_BASE_URL_DEV, REACT_APP_BASE_URL_PRO } = process.env;
 const appMode = process.env.NODE_ENV
-const baseUrl = 
-  appMode === "development"
-    ? REACT_APP_BASE_URL_DEV
-    : 'https://news-explorer-api-liard.vercel.app';
+
 
 export const addArticle = (articleObj, token) => {
   setHeaders(token);

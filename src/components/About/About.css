@@ -12,6 +12,9 @@
 .about__image {
   width: 272px;
   height: 272px;
+  background-image: url("../../images/me.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
   object-fit: cover;
   border-radius: 50%;
 }

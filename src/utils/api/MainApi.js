@@ -6,7 +6,7 @@ const appMode = process.env.NODE_ENV
 const baseUrl = 
   appMode === "development"
     ? REACT_APP_BASE_URL_DEV
-    : REACT_APP_BASE_URL_PRO;
+    : 'https://news-explorer-api-liard.vercel.app';
 
 export const addArticle = (articleObj, token) => {
   setHeaders(token);

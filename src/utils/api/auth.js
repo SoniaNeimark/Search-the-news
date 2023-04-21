@@ -5,7 +5,7 @@ const devMode = process.env.NODE_ENV;
 export const baseUrl =
   devMode === "development"
     ? process.env.REACT_APP_BASE_URL_DEV
-    : process.env.REACT_APP_BASE_URL_PRO;
+    : 'https://news-explorer-api-liard.vercel.app';
 
 export const register = ({ email, password, name }) => {
   return fetch(`${baseUrl}/signup`, {
